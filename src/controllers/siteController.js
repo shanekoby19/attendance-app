@@ -1,68 +1,68 @@
-const sites = [
-    { 
-        program: 'Clark County',
-        site: 'Henderson',
-        longitude: -114.9716274,
-        latitude: 36.0369413
-    },
-    { 
-        program: 'Clark County',
-        site: 'Head Quarters',
-        longitude: -115.1990074,
-        latitude: 36.2189159
-    },
-    { 
-        program: 'Clark County',
-        site: 'Cecile Walnut',
-        longitude: -115.0934075,
-        latitude: 36.2147729,
-    }
-]
+const Site = require('../models/siteModel');
+const { Client } = require('@googlemaps/google-maps-services-js');
+const mongoose = require('mongoose');
 
-const getAllSites = (req, res) => {
+const sites = [];
+
+const getAllSites = async (req, res) => {
+    const allSites = await Site.find();
     
     res.status(200).json({
         status: 'success',
         data: {
-            sites: sites,
+            sites: allSites,
         }
     });
 };
 
-const getSiteById = (req, res) => {
+const getSiteById = async (req, res) => {
     const { id: siteId } = req.params;
+    const site = await Site.find({ _id: siteId });
 
     res.status(200).json({
         status: 'success',
         data: {
-            site: sites[siteId]
+            site: site
         }
     });
 };
 
-const createSite = (req, res) => {
-    const newSite = req.body;
-    sites.push(newSite);
+const createSite = async (req, res) => {
+
+    const newSite = await Site.create({
+        program: req.body.program,
+        site: req.body.site,
+        location: {
+            address: req.body.location.address,
+            city: req.body.location.city,
+            state: req.body.location.state,
+            zip: req.body.location.zip,
+            latitude: req.body.location.latitiude,
+            longitude: req.body.location.longitude
+        }
+    });
 
     res.status(201).json({
         status: 201,
         data: {
-            sites: sites
+            site: newSite
         }
     })
 }
 
-const updateSite = (req, res) => {
-    const updatedSite = req.body;
-    const siteToUpdateId = Number(req.params.id);
+const updateSite = async (req, res) => {
+    const { id: siteId } = req.params;
 
-    const updatedSites = [...sites.filter((_, index) => index !== siteToUpdateId), {...updatedSite}]
+    const updatedSite = await Site.findByIdAndUpdate(mongoose.Types.ObjectId(siteId), {
+        ...req.body
+    }, { 
+        new: true
+    })
 
     res.status(200).json({
         status: 200,
         data: {
-            sites: updatedSites,
-            updatedSite: updatedSite
+            updateSite: updatedSite
         }
     });
 }
@@ -79,10 +79,41 @@ const checkId = (req, res, next, id) => {
     next();
 };
 
+const getCoordinates = async (req, res, next) => {
+    // Destruce the location components from the request body.
+    const { address, city, state, zip } = req.body.location;
+    const fullAddress = `${address} ${city}, ${state} ${zip}`
+
+    // Define a few options for client.geocode method.
+    const args = {
+        params: {
+            key: process.env.GOOGLE_MAPS_API_KEY,
+            address: fullAddress
+        }
+    }
+
+    const client = new Client();
+
+    // Try to get the geolocation data.
+    // If successful we will store it on the req.body.location object
+    try {
+        const { data } = await client.geocode(args);
+        req.body.location.latitiude = data.results[0].geometry.location.lat;
+        req.body.location.longitude = data.results[0].geometry.location.lng;
+    }
+    catch(err) {
+        console.log(err);
+    }
+
+    next();
+}
+
+
 module.exports = {
     getAllSites,
     getSiteById,
     createSite,
     updateSite,
-    checkId
+    checkId,
+    getCoordinates
 }
