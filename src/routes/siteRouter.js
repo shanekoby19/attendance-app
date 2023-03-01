@@ -8,13 +8,12 @@ siteRouter.param('id', siteController.checkId);
 
 siteRouter
     .route('/')
-    .get(siteController.getAllSites)
+    .get(siteController.getSites)
     .post(siteController.getCoordinates, siteController.createSite)
     
 siteRouter
     .route('/:id')
     .get(siteController.getSiteById)
     .patch(siteController.updateSite);
-
 
 module.exports = siteRouter;

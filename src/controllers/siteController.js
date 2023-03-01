@@ -2,17 +2,26 @@ const Site = require('../models/siteModel');
 const { Client } = require('@googlemaps/google-maps-services-js');
 const mongoose = require('mongoose');
 
-const sites = [];
+const getSites = async (req, res) => {
+    const nearbySites = await Site.aggregate([
+        {
+            $geoNear: {
+                near: {
+                    type: "Point",
+                    coordinates: [-115.2011961, 36.2189202]
+                },
+                distanceMultiplier: 0.000621371,
+                distanceField: "distance",
+            }
+        }
+    ])
 
-const getAllSites = async (req, res) => {
-    const allSites = await Site.find();
-    
     res.status(200).json({
         status: 'success',
         data: {
-            sites: allSites,
+            nearbySites: nearbySites
         }
-    });
+    })
 };
 
 const getSiteById = async (req, res) => {
@@ -37,8 +46,9 @@ const createSite = async (req, res) => {
             city: req.body.location.city,
             state: req.body.location.state,
             zip: req.body.location.zip,
-            latitude: req.body.location.latitiude,
-            longitude: req.body.location.longitude
+            coords: {
+                coordinates: req.body.location.coords
+            }
         }
     });
 
@@ -80,7 +90,7 @@ const checkId = (req, res, next, id) => {
 };
 
 const getCoordinates = async (req, res, next) => {
-    // Destruce the location components from the request body.
+    // Destructor the location components from the request body.
     const { address, city, state, zip } = req.body.location;
     const fullAddress = `${address} ${city}, ${state} ${zip}`
 
@@ -98,8 +108,7 @@ const getCoordinates = async (req, res, next) => {
     // If successful we will store it on the req.body.location object
     try {
         const { data } = await client.geocode(args);
-        req.body.location.latitiude = data.results[0].geometry.location.lat;
-        req.body.location.longitude = data.results[0].geometry.location.lng;
+        req.body.location.coords = [data.results[0].geometry.location.lng, data.results[0].geometry.location.lat];
     }
     catch(err) {
         console.log(err);
@@ -110,10 +119,10 @@ const getCoordinates = async (req, res, next) => {
 
 
 module.exports = {
-    getAllSites,
+    getSites,
     getSiteById,
     createSite,
     updateSite,
     checkId,
-    getCoordinates
+    getCoordinates,
 }

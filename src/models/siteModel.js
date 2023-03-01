@@ -30,15 +30,23 @@ const siteSchema = new mongoose.Schema({
             type: String,
             required: [true, 'A site must have a zip code.']
         },
-        latitude: {
-            type: Number,
-            required: [true, 'A site must have a latitude.']
-        },
-        longitude: {
-            type: Number,
-            required: [true, 'A site must have a longitude.']
+        coords: {
+            type: {
+                type: String,
+                enum: ["Point"],
+                default: "Point",
+                required: true
+            },
+            coordinates: {
+                type: [Number],
+                minlength: [2, 'You must provide a latitude and a longitude for this coordinate point.'],
+                maxLength: [2, 'You must only provide two coordinate points for this geoJSON object (lat, lon).']
+            }
         }
     }
 });
+
+// Create a 2dsphere index on the siteSchema to speed up our geo queries.
+siteSchema.index({ "location.coords": '2dsphere' });
 
 module.exports = mongoose.model('Site', siteSchema);
