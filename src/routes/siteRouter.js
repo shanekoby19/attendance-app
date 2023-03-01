@@ -3,9 +3,6 @@ const siteController = require('../controllers/siteController');
 
 const siteRouter = express.Router();
 
-// Add middleware that checks on the id to ensure it's valid before continuing.
-siteRouter.param('id', siteController.checkId);
-
 siteRouter
     .route('/')
     .get(siteController.getSites)
@@ -14,6 +11,7 @@ siteRouter
 siteRouter
     .route('/:id')
     .get(siteController.getSiteById)
-    .patch(siteController.updateSite);
+    .patch(siteController.updateSite)
+    .delete(siteController.deleteSite);
 
 module.exports = siteRouter;

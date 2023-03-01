@@ -3,18 +3,76 @@ const { Client } = require('@googlemaps/google-maps-services-js');
 const mongoose = require('mongoose');
 
 const getSites = async (req, res) => {
-    const nearbySites = await Site.aggregate([
+    // Define the base pipeline query to select all points within your current location.
+    const pipeline = [
         {
             $geoNear: {
                 near: {
                     type: "Point",
-                    coordinates: [-115.2011961, 36.2189202]
+                    coordinates: [-115.1995546, 36.218917]
                 },
                 distanceMultiplier: 0.000621371,
-                distanceField: "distance",
+                distanceField: "distance.miles"
+            },   
+        }
+    ];
+
+
+    // Define the match stage early as there might be multiple match objects.
+    let matchStage = {
+        $match: {
+
+        }
+    };
+
+    // Loop through every query string and place it into it's pipeline stage.
+    const entries = Object.entries(req.query);
+    entries.forEach(([key, value]) => {
+
+        // Define match parameters if listed
+        if(key === 'distance') {
+            let [operator, amount] = Object.entries(value)[0];
+
+            matchStage.$match.distance = {
+                [`$${operator}`]: Number(amount)
             }
         }
-    ])
+        else if(key === 'program') {
+            matchStage.$match.program = value;
+        }
+        else if(key === 'site') {
+            matchStage.$match.site = value;
+        }
+
+        // Define limit parameters if listed
+        if(key === 'limit') {
+            pipeline.push({ $limit: Number(value) });
+        }
+
+        // Define the sort parameters if listed
+        if(key === 'sort') {
+            const [field, sortOrder] = Object.entries(value)[0];
+
+            pipeline.push({ $sort: { [field]: Number(sortOrder)} })
+        }
+    });
+
+    // Push on the "matchStage" and a projection stage to include distance if feet.
+    pipeline.push(matchStage, {
+        $project: {
+            program: 1,
+            site: 1,
+            location: 1,
+            "distance.miles": {
+                $round: ["$distance.miles", 2]
+            },
+            "distance.feet": {
+                $round: [{ $multiply: ["$distance.miles", 5280] }]
+            }
+        }
+    });
+
+    const nearbySites = await Site.aggregate(pipeline)
 
     res.status(200).json({
         status: 'success',
@@ -77,18 +135,6 @@ const updateSite = async (req, res) => {
     });
 }
 
-const checkId = (req, res, next, id) => {
-    // TODO
-
-    // Check to see if id is valid in mongodb.
-
-    // Find and store the site object on the request.
-    
-    console.log('Id is good!')
-
-    next();
-};
-
 const getCoordinates = async (req, res, next) => {
     // Destructor the location components from the request body.
     const { address, city, state, zip } = req.body.location;
@@ -117,12 +163,26 @@ const getCoordinates = async (req, res, next) => {
     next();
 }
 
+const deleteSite = async (req, res) => {
+    try {
+        await Site.findOneAndDelete(mongoose.Types.ObjectId(req.params.id));
+        res.status(204).json({
+            status: 'success',
+            data: null
+        })
+    } catch(err) {
+        res.status(400).json({
+            status: 'fail',
+            message: 'Invalid site id'
+        })
+    }
+}
 
 module.exports = {
     getSites,
     getSiteById,
     createSite,
     updateSite,
-    checkId,
     getCoordinates,
+    deleteSite
 }
