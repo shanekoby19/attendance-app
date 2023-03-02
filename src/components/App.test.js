@@ -8,3 +8,4 @@ test('renders hello world in our app', () => {
     const h1 = screen.getByText(/hello world/i);
     expect(h1).toBeInTheDocument();
 })
+
