@@ -21,7 +21,9 @@ const getSites = async (req, res) => {
     // Define the match stage early as there might be multiple match objects.
     let matchStage = {
         $match: {
+            "distance.miles": {
 
+            }
         }
     };
 
@@ -33,7 +35,7 @@ const getSites = async (req, res) => {
         if(key === 'distance') {
             let [operator, amount] = Object.entries(value)[0];
 
-            matchStage.$match.distance = {
+            matchStage.$match["distance.miles"] = {
                 [`$${operator}`]: Number(amount)
             }
         }
