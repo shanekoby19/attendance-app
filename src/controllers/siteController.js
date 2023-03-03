@@ -3,6 +3,9 @@ const { Client } = require('@googlemaps/google-maps-services-js');
 const mongoose = require('mongoose');
 
 const getSites = async (req, res) => {
+    // Define a boolean flag to determine if a match stage was used.
+    let matchStageUsed = false;
+
     // Define the base pipeline query to select all points within your current location.
     const pipeline = [
         {
@@ -21,9 +24,7 @@ const getSites = async (req, res) => {
     // Define the match stage early as there might be multiple match objects.
     let matchStage = {
         $match: {
-            "distance.miles": {
-
-            }
+            "distance.miles": null
         }
     };
 
@@ -38,12 +39,15 @@ const getSites = async (req, res) => {
             matchStage.$match["distance.miles"] = {
                 [`$${operator}`]: Number(amount)
             }
+            matchStageUsed = true;
         }
         else if(key === 'program') {
             matchStage.$match.program = value;
+            matchStageUsed = true;
         }
         else if(key === 'site') {
             matchStage.$match.site = value;
+            matchStageUsed = true;
         }
 
         // Define limit parameters if listed
@@ -59,8 +63,19 @@ const getSites = async (req, res) => {
         }
     });
 
-    // Push on the "matchStage" and a projection stage to include distance if feet.
-    pipeline.push(matchStage, {
+    // If the distance object in the match stage is never used delete it.
+    if(!matchStage.$match["distance.miles"]) {
+        delete matchStage.$match["distance.miles"];
+    }
+    
+
+    // If any of the match stage parameters were found push the matchStage onto the pipeline.
+    if(matchStageUsed) {
+        pipeline.push(matchStage);
+    }
+
+    // Push on a project stage to round miles and get distance in feet.
+    pipeline.push({
         $project: {
             program: 1,
             site: 1,
