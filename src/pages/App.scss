@@ -1,0 +1,15 @@
+html {
+    & > * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    // 1rem = 10px;
+    font-size: 0.625%;
+    font-family:'Courier New', Courier, monospace;
+}
+
+.App {
+
+}
