@@ -9,7 +9,7 @@ const LocationForm = () => {
     
     // REGENERATE & REPLACE API KEY FOR SECURE ACCESS
     const { ref: addressRef } = usePlacesWidget({
-        apiKey: "AIzaSyAS8PkfSCcwoYlt3nowEQKjMMnLzcXJW6w",
+        apiKey: "",
         options: {
             types: ['address']
         },
