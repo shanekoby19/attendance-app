@@ -9,7 +9,7 @@ const Sites = () => {
     useEffect(() => {
         axios
             .get('http://localhost:3000/api/v1/sites')
-            .then(response => setSites(response.data));
+            .then(response => setSites(response.data.data.nearbySites));
     }, [])
 
     return (

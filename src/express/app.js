@@ -1,17 +1,21 @@
 // Import libraries
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 const path = require('path');
+
 
 // Import routers
 const siteRouter = require('../routes/siteRouter')
 
 
-
-
-
 // Create our app.
 const app = express();
+
+// Add the cors middleware
+app.use(cors({
+    origin: 'http://localhost:3001'
+}))
 
 // Add the body parser middleware to parse incoming post requests and include the json onto the req.body object.
 app.use(express.json());
