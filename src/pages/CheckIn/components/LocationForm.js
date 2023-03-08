@@ -1,11 +1,26 @@
 import { usePlacesWidget } from "react-google-autocomplete";
 import { useRef, useState } from 'react';
+import { useCoords, useUpdateCoords, useUpdateSites } from '../../../context/DataContext';
+import axios from 'axios';
+
+import '../styles/LocationForm.scss';
 
 const LocationForm = () => {
     const cityRef = useRef('');
     const stateRef = useRef('');
     const zipRef = useRef('');
-    const [coordsObj, setCoordsObj] = useState({ type: 'Point' });
+    const coords = useCoords();
+    const updateCoords = useUpdateCoords();
+    const updateSites = useUpdateSites();
+
+
+    const getSites = (lng, lat) => {
+        updateCoords({...coords, coordinates: [lng, lat]})
+
+        axios
+            .get(`http://localhost:3000/api/v1/sites?lng=${lng}&lat=${lat}`)
+            .then(response => updateSites(response.data.data.nearbySites));
+    }
     
     // REGENERATE & REPLACE API KEY FOR SECURE ACCESS
     const { ref: addressRef } = usePlacesWidget({
@@ -18,7 +33,7 @@ const LocationForm = () => {
 
             // Get the longitude and latitude functions from the places obj.
             const { lng, lat } = place.geometry.location;
-            setCoordsObj({ ...coordsObj,  coords: [lng(), lat()]})
+            getSites(lng(), lat())
         }
     });
 
@@ -61,6 +76,8 @@ const LocationForm = () => {
     return (
         <div className='location__form'>
 
+            <h1 className='primary__heading'>Check-In</h1>
+
             <div className='location__form--group'>
                 <label className='location__form--label'>Street Address:</label>
                 <input className='location__form--input' ref={addressRef} autoComplete="new-password"></input>
@@ -71,14 +88,27 @@ const LocationForm = () => {
                 <input className='location__form--input' ref={cityRef} autoComplete="new-password"></input>
             </div>
 
-            <div className='location__form--group'>
-                <label className='location__form--label'>State:</label>
-                <input className='location__form--input' ref={stateRef} autoComplete="new-password"></input>
+            <div className='location__form--group--horizontal'>
+                <div className='location__form--group--horizontal--embedded'>
+                    <label className='location__form--label'>State:</label>
+                    <input className='location__form--input location__form__state__input' ref={stateRef} autoComplete="new-password"></input>
+                </div>
+                <div className='location__form--group--horizontal--embedded'>
+                    <label className='location__form--label'>Zip:</label>
+                    <input className='location__form--input location__form__zip__input' ref={zipRef} autoComplete="new-password"></input>
+                </div>
             </div>    
             
-            <div className='location__form--group'>
-                <label className='location__form--label'>Zip:</label>
-                <input className='location__form--input' ref={zipRef} autoComplete="new-password"></input>
+            <div style={{display: "flex"}}>
+                <div className='location__form--group--horizontal--embedded'>
+                    <button 
+                        className='primary__button'
+                        onClick={getSites}
+                    >Search</button>
+                </div>
+                <div className='location__form--group--horizontal--embedded'>
+                    <button className='secondary__button'>Use Current Location</button>
+                </div>
             </div>
         </div>
     )

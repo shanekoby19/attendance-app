@@ -12,7 +12,7 @@ const getSites = async (req, res) => {
             $geoNear: {
                 near: {
                     type: "Point",
-                    coordinates: [-115.1995546, 36.218917]
+                    coordinates: [Number(req.query.lng), Number(req.query.lat)]
                 },
                 distanceMultiplier: 0.000621371,
                 distanceField: "distance.miles"

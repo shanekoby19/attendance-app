@@ -1,0 +1,44 @@
+.location__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 35%;
+    max-width: 450px;
+
+    &--group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+    }
+
+    &--group--horizontal {
+        display: flex;
+        margin-bottom: 1rem;
+
+        &--embedded {
+            display: flex;
+            flex-direction: column;
+
+            &:first-child {
+                margin-right: 1rem;
+                width: 5rem;
+                flex-grow: 0.2;
+            }
+
+            &:last-child {
+                width: calc(100% - 5rem - 1rem);
+            }
+        }
+    }
+
+    & label {
+        margin-bottom: 0.3rem;
+        font-size: 0.8rem;
+    }
+
+    & input {
+        font-size: 1.3rem;
+        border-radius: 0.6rem;
+        padding: 0.5rem 0.8rem;
+    }
+}
