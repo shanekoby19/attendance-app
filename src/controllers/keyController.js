@@ -1,7 +1,7 @@
 const Key = require('../models/keyModel');
 
 const getAllKeys = async (req, res) => {
-    const query =  req.query ? {
+    const query =  req.query?.name ? {
         name: req.query.name
     } : {}
 

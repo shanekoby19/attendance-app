@@ -12,6 +12,8 @@ const getUsers = async (req, res) => {
 }
 
 const addUser = async (req, res) => {
+    console.log(req.body);
+
     const user = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -20,7 +22,7 @@ const addUser = async (req, res) => {
         role: req.body.role,
     }
 
-    const newUser = await User.create({ user });
+    const newUser = await User.create(user);
 
     res.status(201).json({
         status: 'success',

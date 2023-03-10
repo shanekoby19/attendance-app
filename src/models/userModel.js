@@ -14,7 +14,8 @@ const userSchema = new Schema({
     },
     email: {
         type: 'String',
-        required: [true, 'A user must have an email.']
+        required: [true, 'A user must have an email.'],
+        unique: [true, 'This email is already in use, please contact our support team for more information.']
     },
     password: {
         type: 'String',
