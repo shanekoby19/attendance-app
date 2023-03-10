@@ -33,7 +33,7 @@ const addKey = async (req, res) => {
     res.status(201).json({
         status: 'success',
         data: {
-            newKey
+            key: newKey
         }
     })
 }
