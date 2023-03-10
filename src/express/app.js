@@ -5,8 +5,9 @@ const cors = require('cors');
 const path = require('path');
 
 // Import routers
-const siteRouter = require('../routes/siteRouter.js')
+const siteRouter = require('../routes/siteRouter.js');
 const keyRouter = require('../routes/keyRouter.js');
+const userRouter = require('../routes/userRouter.js');
 
 
 // Create our app.
@@ -32,5 +33,6 @@ if(process.env.NODE_ENV === 'development') {
 // Router middleware
 app.use('/api/v1/sites', siteRouter);
 app.use('/api/v1/keys', keyRouter);
+app.use('/api/v1/users', userRouter);
 
 module.exports = app;
