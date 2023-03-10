@@ -10,7 +10,7 @@ const userRouter = express.Router();
 
 userRouter
     .route('/')
-    .get(authController.login, authController.isAuthorized('admin'), getUsers)
-    .post(authController.login, authController.isAuthorized('super admin'), addUser)
+    .get(authController.isAuthorized('admin'), getUsers)
+    .post(authController.isAuthorized('super admin'), addUser)
 
 module.exports = userRouter;

@@ -9,7 +9,8 @@ const keySchema = new Schema({
     },
     key: {
         type: 'String', 
-        required: [true, 'An api key must have a key value.']
+        required: [true, 'An api key must have a key value.'],
+        unique: [true, 'The key value must be unique for each api key.']
     }
 });
 
