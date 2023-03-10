@@ -1,7 +1,18 @@
-import { Key } from '../models/keyModel';
+const Key = require('../models/keyModel');
 
-export const getAllKeys = async (req, res) => {
-    const keys = await Key.find();
+const getAllKeys = async (req, res) => {
+    const query =  req.query ? {
+        name: req.query.name
+    } : {}
+
+    const keys = await Key.find(query);
+
+    if(keys.length === 0) {
+        return res.status(400).json({
+            status: 'fail',
+            message: `The key you are looking for doesn't exist`
+        })
+    }
     
     res.status(200).json({
         status: 'success',
@@ -11,26 +22,13 @@ export const getAllKeys = async (req, res) => {
     })
 }
 
-export const getKeyByName = async (req, res) => {
-    const { name } = req.query;
-
-    const key = await Key.find({ name: name });
-    
-    res.status(200).json({
-        status: 'success',
-        data: {
-            key
-        }
-    })
-}
-
-export const addKey = async (req, res) => {
+const addKey = async (req, res) => {
     const keyToInsert = {
         name: req.body.name,
         key: req.body.key
     };
 
-    const newKey = await Key.insertOne(keyToInsert);
+    const newKey = await Key.create(keyToInsert);
 
     res.status(201).json({
         status: 'success',
@@ -38,4 +36,9 @@ export const addKey = async (req, res) => {
             newKey
         }
     })
+}
+
+module.exports =  {
+    getAllKeys,
+    addKey
 }
