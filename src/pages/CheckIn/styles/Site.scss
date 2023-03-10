@@ -1,0 +1,51 @@
+.site {
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+        margin-top: 2rem;
+
+        &__name {
+            font-size: 1.4rem;
+            font-weight: 500;
+            color: #14A79E;
+        }
+    }
+
+    &__details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        & button {
+            margin-left: 2rem;
+            align-self: center;
+        }
+         
+        &__address {
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        &__checkIn {
+            display: flex;
+            
+            &__button {
+                margin-right: 2rem;
+            }
+        }
+
+        &__distance {
+            font-size: 1.4rem;
+            font-weight: 300;
+
+            &--fail {
+                color: red;
+            }
+
+            &--success {
+                color: white;
+            }
+        }
+    }
+}

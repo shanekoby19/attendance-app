@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import '../styles/LocationForm.scss';
 
-const LocationForm = () => {
+const LocationForm = ({ style }) => {
     const cityRef = useRef('');
     const stateRef = useRef('');
     const zipRef = useRef('');
@@ -46,7 +46,7 @@ const LocationForm = () => {
     
     // REGENERATE & REPLACE API KEY FOR SECURE ACCESS
     const { ref: addressRef } = usePlacesWidget({
-        apiKey: "AIzaSyD2Evr1odtSmTzPK8CyeoMansB19hcCxgw",
+        apiKey: "",
         options: {
             types: ['address']
         },
@@ -96,7 +96,7 @@ const LocationForm = () => {
     }
 
     return (
-        <div className='location__form'>
+        <div style={style} className='location__form'>
 
             <h1 className='primary__heading'>Check-In</h1>
 
