@@ -21,10 +21,32 @@ const LocationForm = () => {
             .get(`http://localhost:3000/api/v1/sites?lng=${lng}&lat=${lat}`)
             .then(response => updateSites(response.data.data.nearbySites));
     }
+
+    const useCurrentLocation = () => {
+        const location = navigator.geolocation.getCurrentPosition(({ coords }) => {
+            updateCoords(coords.latitude, coords.longitude);
+            getSites(coords.longitude, coords.latitude);
+        }, ({ code }) => {
+            // Code 1 = 'Permissions Denied'
+            if(code === 1) {
+                console.log('Sorry, it looks like you block location services on this computer. Please turn them on to continue.')
+            }
+            // Code 2 = 'Location Unavailable'
+            if(code === 2) {
+                console.log('Internal error, please try again later.');
+            }
+            // Code 3 = 'Timeout'
+            if(code === 3) {
+                console.log('Whoops, it looks like getting your location is taking longer than expected. Please try again later.')
+            }
+        }, {
+            timeout: 10000 // 10 seconds
+        });
+    }
     
     // REGENERATE & REPLACE API KEY FOR SECURE ACCESS
     const { ref: addressRef } = usePlacesWidget({
-        apiKey: "",
+        apiKey: "AIzaSyD2Evr1odtSmTzPK8CyeoMansB19hcCxgw",
         options: {
             types: ['address']
         },
@@ -107,7 +129,9 @@ const LocationForm = () => {
                     >Search</button>
                 </div>
                 <div className='location__form--group--horizontal--embedded'>
-                    <button className='secondary__button'>Use Current Location</button>
+                    <button 
+                        className='secondary__button'
+                        onClick={useCurrentLocation}>Use Current Location</button>
                 </div>
             </div>
         </div>

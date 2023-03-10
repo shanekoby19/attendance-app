@@ -7,12 +7,12 @@ import './CheckIn.scss';
 const CheckIn = () => {
     return (
         <div className='checkIn'>
-            <section className='checkIn__data__entry'>
+            <section style={{ width: "50%" }}>
                 <LocationForm></LocationForm>
-                <Map></Map>
-            </section>
-            <section className='checkIn__sites'>
                 <Sites></Sites>
+            </section>
+            <section style={{ height: "90vh", width: "50%" }}>
+                <Map></Map>
             </section>
         </div>
     )

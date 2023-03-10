@@ -17,7 +17,7 @@ const Map = () => {
     
     const ChangeView = () => {
         const map = useMap();
-        map.flyTo(center, 11);
+        map.flyTo(center, 14);
         return null;
     }
 
