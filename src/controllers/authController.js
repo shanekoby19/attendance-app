@@ -1,6 +1,8 @@
 const User = require('../models/userModel');
+const errorCatcher = require('../error/errorCatcher');
+const AttendanceError = require('../error/AttendanceError')
 
-const login = async (req, res, next) => {
+const login = errorCatcher(async (req, res, next) => {
     const userQuery = {
         email: req.body.email,
         password: req.body.password
@@ -9,11 +11,7 @@ const login = async (req, res, next) => {
     const user = await User.findOne(userQuery);
 
     if(!user) {
-        return res
-            .status(401).json({
-                status: 'fail',
-                message: 'This action requires authentication. We could not find your credentials in the database. Please try again.'
-            })
+        return next(new AttendanceError('We could not find a user with the given email and password', 400, 'fail'))
     }
 
     res
@@ -25,7 +23,7 @@ const login = async (req, res, next) => {
             status: 'success',
             message: 'Login Successful'
         })
-}
+});
 
 const logout = (req, res, next) => {
     res.clearCookie('user');
@@ -37,15 +35,12 @@ const logout = (req, res, next) => {
 }
 
 const isAuthorized = (authorizationLevel) => {
-    return (req, res, next) => {
+    return errorCatcher((req, res, next) => {
         const { user } = req.cookies;
 
         // User has recently logged out or cookie has expired for other reason.
         if(!user) {
-            return res.status(401).json({
-                status: 'fail',
-                message: `Sorry, it looks like you aren't logged in. Please login again to view this resource.`
-            })
+            return next(new AttendanceError(`Sorry, it looks like you aren't logged in. Please login again to view this resource.`, 400, 'fail'))
         }
 
         const authorizationMap = {
@@ -64,7 +59,7 @@ const isAuthorized = (authorizationLevel) => {
         }
 
         next();
-    }
+    })
 }
 
 module.exports = {

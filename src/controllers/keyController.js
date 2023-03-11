@@ -1,7 +1,8 @@
 const Key = require('../models/keyModel');
+const errorCatcher = require('../error/errorCatcher');
+const AttendanceError = require('../error/AttendanceError');
 
 const getAllKeys = async (req, res, next) => {
-
     const query =  req.query?.name ? {
         name: req.query.name
     } : {}
@@ -9,10 +10,7 @@ const getAllKeys = async (req, res, next) => {
     const keys = await Key.find(query);
 
     if(keys.length === 0) {
-        return res.status(400).json({
-            status: 'fail',
-            message: `The key you are looking for doesn't exist`
-        })
+        return next(new AttendanceError(`The key you are looking for doesn't exist`, 400, 'fail'))
     }
     
     res.status(200).json({
@@ -23,13 +21,15 @@ const getAllKeys = async (req, res, next) => {
     })
 }
 
-const addKey = async (req, res, next) => {
+const addKey = errorCatcher(async (req, res, next) => {
     const keyToInsert = {
         name: req.body.name,
         key: req.body.key
     };
 
+    
     const newKey = await Key.create(keyToInsert);
+        
 
     res.status(201).json({
         status: 'success',
@@ -37,7 +37,7 @@ const addKey = async (req, res, next) => {
             key: newKey
         }
     })
-}
+});
 
 module.exports =  {
     getAllKeys,

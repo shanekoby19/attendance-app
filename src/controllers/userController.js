@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
+const errorCatcher = require('../error/errorCatcher');
 
-const getUsers = async (req, res) => {
+const getUsers = errorCatcher(async (req, res, next) => {
     const users = await User.find();
 
     res.status(200).json({
@@ -9,9 +10,9 @@ const getUsers = async (req, res) => {
             users
         }
     })
-}
+})
 
-const addUser = async (req, res) => {
+const addUser = errorCatcher(async (req, res, next) => {
     const user = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -28,7 +29,7 @@ const addUser = async (req, res) => {
             user: newUser
         }
     })
-}
+});
 
 module.exports = {
     getUsers,

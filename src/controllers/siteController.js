@@ -2,6 +2,9 @@ const Site = require('../models/siteModel');
 const { Client } = require('@googlemaps/google-maps-services-js');
 const mongoose = require('mongoose');
 
+const errorCatcher = require('../error/errorCatcher');
+const AttendanceError = require('../error/AttendanceError');
+
 const getSites = async (req, res) => {
     // Define a boolean flag to determine if a match stage was used.
     let matchStageUsed = false;
@@ -99,9 +102,10 @@ const getSites = async (req, res) => {
     })
 };
 
-const getSiteById = async (req, res) => {
+const getSiteById = errorCatcher( async(req, res, next) => {
     const { id: siteId } = req.params;
-    const site = await Site.find({ _id: siteId });
+
+    const site = await Site.findById(siteId);
 
     res.status(200).json({
         status: 'success',
@@ -109,7 +113,7 @@ const getSiteById = async (req, res) => {
             site: site
         }
     });
-};
+});
 
 const createSite = async (req, res) => {
 
