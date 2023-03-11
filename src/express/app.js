@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const errorController = require('../controllers/errorController');
 
 // Import routers
 const siteRouter = require('../routes/siteRouter.js');
@@ -41,5 +42,8 @@ app.use('/api/v1/sites', siteRouter);
 app.use('/api/v1/keys', keyRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
+
+// Error handling middleware
+app.use(errorController);
 
 module.exports = app;
