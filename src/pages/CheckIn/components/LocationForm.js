@@ -1,11 +1,12 @@
 import { usePlacesWidget } from "react-google-autocomplete";
-import { useRef, useState } from 'react';
-import { useCoords, useUpdateCoords, useUpdateSites } from '../../../context/DataContext';
+import { useRef, useEffect, useState } from 'react';
 import axios from 'axios';
+
+import { useCoords, useUpdateCoords, useUpdateSites } from '../../../context/DataContext';
 
 import '../styles/LocationForm.scss';
 
-const LocationForm = ({ style }) => {
+const LocationForm = ({ style, apiKeys }) => {
     const cityRef = useRef('');
     const stateRef = useRef('');
     const zipRef = useRef('');
@@ -14,7 +15,7 @@ const LocationForm = ({ style }) => {
     const updateSites = useUpdateSites();
 
 
-    const getSites = (lng, lat) => {
+    const getSites = async (lng, lat) => {
         updateCoords({...coords, coordinates: [lng, lat]})
 
         axios
@@ -46,7 +47,7 @@ const LocationForm = ({ style }) => {
     
     // REGENERATE & REPLACE API KEY FOR SECURE ACCESS
     const { ref: addressRef } = usePlacesWidget({
-        apiKey: "",
+        apiKey: apiKeys['GOOGLE_API_KEY'],
         options: {
             types: ['address']
         },

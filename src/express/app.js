@@ -17,7 +17,8 @@ const app = express();
 
 // Add the cors middleware
 app.use(cors({
-    origin: 'http://localhost:3001'
+    origin: 'http://localhost:3001',
+    credentials: true
 }))
 
 // Apply the cookie-parser middleware

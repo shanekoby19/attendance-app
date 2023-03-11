@@ -37,7 +37,6 @@ const logout = (req, res, next) => {
 }
 
 const isAuthorized = (authorizationLevel) => {
-
     return (req, res, next) => {
         const { user } = req.cookies;
 

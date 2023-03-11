@@ -12,8 +12,6 @@ const getUsers = async (req, res) => {
 }
 
 const addUser = async (req, res) => {
-    console.log(req.body);
-
     const user = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
