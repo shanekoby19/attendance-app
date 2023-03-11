@@ -4,8 +4,11 @@ const { login, logout } = require('../controllers/authController');
 const authRouter = express.Router();
 
 authRouter
-    .route('/')
+    .route('/login')
     .post(login)
+
+authRouter
+    .route('/logout')
     .delete(logout)
 
 module.exports = authRouter;
