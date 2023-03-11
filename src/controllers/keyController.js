@@ -1,6 +1,7 @@
 const Key = require('../models/keyModel');
 
-const getAllKeys = async (req, res) => {
+const getAllKeys = async (req, res, next) => {
+
     const query =  req.query?.name ? {
         name: req.query.name
     } : {}
@@ -22,7 +23,7 @@ const getAllKeys = async (req, res) => {
     })
 }
 
-const addKey = async (req, res) => {
+const addKey = async (req, res, next) => {
     const keyToInsert = {
         name: req.body.name,
         key: req.body.key
