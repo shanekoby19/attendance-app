@@ -2,11 +2,11 @@ const Key = require('../models/keyModel');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
 
-const getAllKeys = async (req, res, next) => {
+const getAllKeys = errorCatcher(async (req, res, next) => {
     const query =  req.query?.name ? {
         name: req.query.name
-    } : {}
-
+    } : {};
+    
     const keys = await Key.find(query);
 
     if(keys.length === 0) {
@@ -19,7 +19,7 @@ const getAllKeys = async (req, res, next) => {
             keys
         }
     })
-}
+});
 
 const addKey = errorCatcher(async (req, res, next) => {
     const keyToInsert = {

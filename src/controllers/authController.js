@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const jwt = require('jsonwebtoken');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError')
 
@@ -14,19 +15,26 @@ const login = errorCatcher(async (req, res, next) => {
         return next(new AttendanceError('We could not find a user with the given email and password', 400, 'fail'))
     }
 
+    const token = jwt.sign(user.toJSON(), process.env.JWT_SECRET, {
+        expiresIn: "3h"
+    });
+
     res
         .status(201)
-        .cookie('user', user, {
+        .cookie('token', token, {
             httpOnly: true,
         })
         .json({
             status: 'success',
+            token,
             message: 'Login Successful'
         })
 });
 
 const logout = (req, res, next) => {
-    res.clearCookie('user');
+    res.clearCookie('token');
+
+    req.body = {};
 
     res.status(200).json({
         status: 'success',
@@ -35,8 +43,8 @@ const logout = (req, res, next) => {
 }
 
 const isAuthorized = (authorizationLevel) => {
-    return errorCatcher((req, res, next) => {
-        const { user } = req.cookies;
+    return (req, res, next) => {
+        const { user } = req;
 
         // User has recently logged out or cookie has expired for other reason.
         if(!user) {
@@ -59,11 +67,36 @@ const isAuthorized = (authorizationLevel) => {
         }
 
         next();
-    })
+    }
 }
+
+const isAuthenticated = errorCatcher(async (req, res, next) => {
+    const { token } = req.cookies;
+
+    // If the token doesn't exist send an error.
+    if(!token) {
+        return next(new AttendanceError('Sorry, no token was provided. Please login to gain access to this data.', 401, 'fail'))
+    }
+
+    const decodedUser = jwt.verify(token, process.env.JWT_SECRET, {
+        maxAge: "3h"
+    });
+
+    const user = await User.findById(decodedUser._id);
+
+    // If the decodedUser object does not have the same id as the user in the database, reject the attempt to login.
+    if(decodedUser._id !== user._id.toString()) {
+        return next(new AttendanceError('Invalid user, your token has been tampered with. Please logout and login again to be reverified.', 401, 'fail'))
+    }
+
+    req.user = user;
+
+    next();
+});
 
 module.exports = {
     login,
     logout,
-    isAuthorized
+    isAuthorized,
+    isAuthenticated,
 }
