@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import axios from 'axios';
 
 import Sites from './components/Sites';
@@ -40,13 +41,32 @@ const CheckIn = () => {
 
     return (
         <div className='checkIn'>
-            <section style={mapIsExpanded ? { width: "30%" } : { width: "50%" }}>
-                <LocationForm apiKeys={apiKeys} style={mapIsExpanded ? { width: "100%"} : { width: "60%"} }></LocationForm>
+            <motion.section 
+                initial={{ width: mapIsExpanded ? "10%" : "30%" }}
+                animate={{ width: mapIsExpanded ? "30%" : "50%"}}
+                transition={{
+                    type: 'spring',
+                    duration: 1.5,
+                }}
+            >
+                <LocationForm apiKeys={apiKeys} mapIsExpanded={mapIsExpanded}></LocationForm>
                 <Sites></Sites>
-            </section>
-            <section style={mapIsExpanded ? { height: "90vh", width: "70%" } : { height: "90vh", width: "50%" }}>
+            </motion.section>
+            <motion.section 
+                initial={{ 
+                    height: "90vh", 
+                    width: mapIsExpanded ? "70%" : "50%" 
+                }}
+                animate={{ 
+                    width: mapIsExpanded ? "70%" : "50%"
+                }}
+                transition={{
+                    type: 'spring',
+                    duration: 1.5,
+                }}
+            >
                 <Map></Map>
-            </section>
+            </motion.section>
         </div>
     )
 }

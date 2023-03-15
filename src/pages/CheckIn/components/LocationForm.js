@@ -1,12 +1,12 @@
 import { usePlacesWidget } from "react-google-autocomplete";
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
 import axios from 'axios';
 
 import { useCoords, useUpdateCoords, useUpdateSites } from '../../../context/DataContext';
 
 import '../styles/LocationForm.scss';
 
-const LocationForm = ({ style, apiKeys }) => {
+const LocationForm = ({ mapIsExpanded, apiKeys }) => {
     const cityRef = useRef('');
     const stateRef = useRef('');
     const zipRef = useRef('');
@@ -19,12 +19,12 @@ const LocationForm = ({ style, apiKeys }) => {
         updateCoords({...coords, coordinates: [lng, lat]})
 
         axios
-            .get(`http://localhost:3000/api/v1/sites?lng=${lng}&lat=${lat}`)
+            .get(`http://localhost:3000/api/v1/sites?lng=${lng}&lat=${lat}&limit=3`)
             .then(response => updateSites(response.data.data.nearbySites));
     }
 
     const useCurrentLocation = () => {
-        const location = navigator.geolocation.getCurrentPosition(({ coords }) => {
+        navigator.geolocation.getCurrentPosition(({ coords }) => {
             updateCoords(coords.latitude, coords.longitude);
             getSites(coords.longitude, coords.latitude);
         }, ({ code }) => {
@@ -97,7 +97,10 @@ const LocationForm = ({ style, apiKeys }) => {
     }
 
     return (
-        <div style={style} className='location__form'>
+        <div
+            className='location__form'
+            style={{ width: mapIsExpanded ? "100%" : "50%" }}
+        >
 
             <h1 className='primary__heading'>Check-In</h1>
 

@@ -1,4 +1,5 @@
 import { useCoords } from '../../../context/DataContext';
+import { motion } from 'framer-motion';
 
 import '../styles/Site.scss';
 
@@ -8,8 +9,21 @@ const Site = ({ site }) => {
     const [ originLng, originLat ] = site.location.coords.coordinates;
     const [ destLng, destLat ] = useCoords().coordinates;
 
+    const siteVariant = {
+        hidden: { opacity: 0 },
+        show: { 
+            opacity: 1,
+            transition: {
+                duration: 0.5,
+            }
+        }
+    }
+
     return (
-        <div className='site'>
+        <motion.div 
+            className='site'
+            variants={siteVariant}
+        >
             <section className='site__header'>
                 <h2 className='site__header__name'>{site.site}</h2>
             </section>
@@ -37,7 +51,7 @@ const Site = ({ site }) => {
                     >Check-In</button>
                 </div>
             </section>
-        </div>
+        </motion.div>
     )
 }
 

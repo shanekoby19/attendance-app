@@ -53,6 +53,11 @@ const getSites = async (req, res) => {
             matchStageUsed = true;
         }
 
+        // Define skip parameters if listed
+        if(key === 'skip') {
+            pipeline.push({ $skip: Number(value) });
+        }
+
         // Define limit parameters if listed
         if(key === 'limit') {
             pipeline.push({ $limit: Number(value) });
