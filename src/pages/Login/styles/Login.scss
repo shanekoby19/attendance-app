@@ -1,0 +1,59 @@
+.login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    &__graphic {
+        &--image {
+            width: 36rem;
+            height: 24rem;
+        }
+    }
+
+    &__form {
+        background-color: rgb(165, 215, 253);
+        height: 20rem;
+        padding: 2rem 5rem;
+        color: black;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 20rem;
+
+        &__group {
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+            width: 80%;
+            position: relative;
+
+            &--icon {
+                scale: 1.4;
+                position: absolute;
+                color: rgb(246, 104, 27);
+                top: 2rem;
+                left: 0.7rem;
+            }
+            
+            & > label, input {
+                margin-bottom: 0.5rem;
+                font-weight: 500;
+                font-size: 0.8rem;
+            }
+
+            & > input {
+                margin-bottom: 1rem;
+                font-size: 0.8rem;
+                padding: 0.5rem 0.5rem 0.5rem 2.2rem;
+                border-radius: 1rem;
+                border: none;
+            }
+
+            & > input:active, input:focus {
+                outline: none;
+            }
+
+        }
+    }
+}

@@ -1,0 +1,30 @@
+.error {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    border-radius: 2rem;
+
+    &__image {
+        width: 100%;
+    }
+
+    &__content {
+        width: 20%;
+        margin-right: 5rem;
+        
+        &--status {
+            font-size: 3rem;
+            font-weight: 500;
+            color: red;
+        }
+    
+        &--message {
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: white;
+        }
+    }
+    
+}

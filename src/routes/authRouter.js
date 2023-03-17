@@ -1,10 +1,11 @@
 const express = require('express');
-const { login, logout } = require('../controllers/authController');
+const { login, logout, isAuthenticated, getAuthUser } = require('../controllers/authController');
 
 const authRouter = express.Router();
 
 authRouter
     .route('/login')
+    .get(isAuthenticated, getAuthUser)
     .post(login)
 
 authRouter

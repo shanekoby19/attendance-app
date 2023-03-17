@@ -11,7 +11,7 @@ const keyRouter = express.Router();
 
 keyRouter
     .route('/')
-    .get(authController.isAuthenticated, authController.isAuthorized('super admin'), getAllKeys)
+    .get(authController.isAuthenticated, getAllKeys)
     .post(authController.isAuthenticated, authController.isAuthorized('super admin'), addKey)
     
 module.exports = keyRouter;

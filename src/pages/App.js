@@ -1,15 +1,20 @@
-import CheckIn from './CheckIn/CheckIn';
 import { DataContextProvider } from '../context/DataContext';
+import { AuthContextProvider } from '../context/AuthContext';
+import { RouterProvider } from 'react-router-dom';
+import UIRouter from '../uiRouter/uiRouter';
 
 import './App.scss';
 
-const App = () => {
+const App = () => {    
     return (
-        <DataContextProvider>
-            <div className='App'>
-                <CheckIn />
-            </div>
-        </DataContextProvider>
+        <AuthContextProvider>
+            <DataContextProvider>
+                <RouterProvider router={UIRouter}>
+                    <div className='App'>
+                    </div>
+                </RouterProvider>
+            </DataContextProvider>
+        </AuthContextProvider>
     )
 }
 

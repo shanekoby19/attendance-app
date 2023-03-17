@@ -26,7 +26,7 @@ const login = errorCatcher(async (req, res, next) => {
         })
         .json({
             status: 'success',
-            token,
+            user: user,
             message: 'Login Successful'
         })
 });
@@ -94,9 +94,16 @@ const isAuthenticated = errorCatcher(async (req, res, next) => {
     next();
 });
 
+const getAuthUser = (req, res, next) => {
+    res.status(200).json({
+        data: req.user,
+    })
+};
+
 module.exports = {
     login,
     logout,
     isAuthorized,
     isAuthenticated,
+    getAuthUser,
 }

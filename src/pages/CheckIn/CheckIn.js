@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import { useLoaderData } from 'react-router-dom';
 
 import Sites from './components/Sites';
 import LocationForm from './components/LocationForm';
@@ -12,32 +11,7 @@ import './CheckIn.scss';
 const CheckIn = () => {
     const sites = useSites();
     const mapIsExpanded = sites.length === 0;
-
-    const [apiKeys, setApiKeys] = useState({});
-
-    useEffect(() => {
-        const getKeys = async() => {
-            await axios.post('http://localhost:3000/api/v1/auth/login', {
-                    email: 'skobylecky1@acelero.net',
-                    password: 'root1234'
-                }, { withCredentials: true });
-            
-            const res = await axios.get('http://localhost:3000/api/v1/keys', { withCredentials: true });
-            const apiKeys = {};
-            res.data.data.keys.forEach(key => apiKeys[key.name] = key.key)
-            setApiKeys(apiKeys)
-        }
-
-        getKeys();
-    }, [])
-
-    // TODO: render a loading component while we get the API key from storage.
-    if(!apiKeys['GOOGLE_API_KEY']) {
-        return (
-            <div>
-            Loading...</div>
-        )
-    }
+    const apiKeys = useLoaderData();
 
     return (
         <div className='checkIn'>
