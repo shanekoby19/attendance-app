@@ -8,6 +8,7 @@ import axios from 'axios';
 import Error from '../pages/Error/components/Error';
 import Login from '../pages/Login/components/Login';
 import CheckIn from '../pages/CheckIn/CheckIn';
+import CheckInLink from '../pages/CheckInLink/components/CheckInLink';
 
 
 const UIRouter = () => {
@@ -51,6 +52,15 @@ const UIRouter = () => {
                 }
             },
             element: <CheckIn />,
+            errorElement: <ErrorBoundary />
+        },
+        {
+            path: '/checkin/link',
+            loader: async () => {
+                await isAuthenticated();
+                return {}
+            },
+            element: <CheckInLink />,
             errorElement: <ErrorBoundary />
         }
     ])

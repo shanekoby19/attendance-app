@@ -1,13 +1,52 @@
-import { useCoords } from '../../../context/DataContext';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+
+import { useCoords } from '../../../context/DataContext';
 
 import '../styles/Site.scss';
 
-const Site = ({ site }) => {
-    const distance = site.distance.feet <= 500 ? `${site.distance.feet}ft` : `${site.distance.miles}mi`;
-    const within1000feet = site.distance.feet <= 500;
+
+const Site = ({ site, setError, setLoading }) => {
+    const distance = site.distance.feet <= 20000 ? `${site.distance.feet}ft` : `${site.distance.miles}mi`;
+    const within1000feet = site.distance.feet <= 20000;
     const [ originLng, originLat ] = site.location.coords.coordinates;
     const [ destLng, destLat ] = useCoords().coordinates;
+    const navigate = useNavigate();
+
+    const validateCheckIn = () => {
+        setError('');
+        setLoading(true);
+        navigator.geolocation.getCurrentPosition(async ({ coords }) => {
+            const closestCenter = await axios
+                .get(`http://localhost:3000/api/v1/sites?lng=${coords.longitude}&lat=${coords.latitude}&limit=1`)
+                .then(response => response.data.data.nearbySites[0]);
+
+            if(closestCenter.distance.feet <= 20000) {
+                return navigate('/checkin/link');
+            }
+
+            setError(`Invalid check-in attempt: your current location must be within 20000 feet of the center to check-in. According to our location search you are ${closestCenter.distance.miles} mi away.`)
+            setLoading(false);
+        }, ({ code }) => {
+            // Code 1 = 'Permissions Denied'
+            if(code === 1) {
+                setError('Whoops, it looks like location services are blocked on this computer. Please turn them on to continue.');
+            }
+            // Code 2 = 'Location Unavailable'
+            if(code === 2) {
+                setError('Internal error, please try again later.');
+            }
+            // Code 3 = 'Timeout'
+            if(code === 3) {
+                setError('Whoops, it looks like getting your location is taking longer than expected. Please try again later.');
+            }
+
+            setLoading(false);
+        }, {
+            timeout: 10000 // 10 seconds
+        });
+    }
 
     const siteVariant = {
         hidden: { opacity: 0 },
@@ -48,6 +87,7 @@ const Site = ({ site }) => {
                     <button
                         disabled={!within1000feet}
                         className={`primary__button${within1000feet ? '' : '--disabled'} site__details__checkIn__button`}
+                        onClick={validateCheckIn}
                     >Check-In</button>
                 </div>
             </section>

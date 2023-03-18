@@ -6,7 +6,7 @@ import { useCoords, useUpdateCoords, useUpdateSites } from '../../../context/Dat
 
 import '../styles/LocationForm.scss';
 
-const LocationForm = ({ mapIsExpanded, apiKeys }) => {
+const LocationForm = ({ mapIsExpanded, apiKeys, setError, setLoading }) => {
     const cityRef = useRef('');
     const stateRef = useRef('');
     const zipRef = useRef('');
@@ -24,25 +24,30 @@ const LocationForm = ({ mapIsExpanded, apiKeys }) => {
     }
 
     const useCurrentLocation = () => {
+        setError('');
+        setLoading(true);
         navigator.geolocation.getCurrentPosition(({ coords }) => {
             updateCoords(coords.latitude, coords.longitude);
             getSites(coords.longitude, coords.latitude);
+            setLoading(false);
         }, ({ code }) => {
             // Code 1 = 'Permissions Denied'
             if(code === 1) {
-                console.log('Sorry, it looks like you block location services on this computer. Please turn them on to continue.')
+                setError('Sorry, it looks like you block location services on this computer. Please turn them on to continue.');
             }
             // Code 2 = 'Location Unavailable'
             if(code === 2) {
-                console.log('Internal error, please try again later.');
+                setError('Internal error, please try again later.');
             }
             // Code 3 = 'Timeout'
             if(code === 3) {
-                console.log('Whoops, it looks like getting your location is taking longer than expected. Please try again later.')
+                setError('Whoops, it looks like getting your location is taking longer than expected. Please try again later.')
             }
+            setLoading(false);
         }, {
             timeout: 10000 // 10 seconds
         });
+
     }
     
     // REGENERATE & REPLACE API KEY FOR SECURE ACCESS
@@ -52,11 +57,13 @@ const LocationForm = ({ mapIsExpanded, apiKeys }) => {
             types: ['address']
         },
         onPlaceSelected : (place) => {
+            console.log(place);
+            setError('');
             fillAddressComponents(place.address_components);
 
             // Get the longitude and latitude functions from the places obj.
             const { lng, lat } = place.geometry.location;
-            getSites(lng(), lat())
+            getSites(lng(), lat());
         }
     });
 

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLoaderData } from 'react-router-dom';
 
@@ -12,6 +13,8 @@ const CheckIn = () => {
     const sites = useSites();
     const mapIsExpanded = sites.length === 0;
     const { apiKeys, maxNumOfSites } = useLoaderData();
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     return (
         <div className='checkIn'>
@@ -23,8 +26,21 @@ const CheckIn = () => {
                     duration: 1.5,
                 }}
             >
-                <LocationForm apiKeys={apiKeys} mapIsExpanded={mapIsExpanded}></LocationForm>
-                <Sites maxNumOfSites={maxNumOfSites}></Sites>
+                <LocationForm 
+                    apiKeys={apiKeys} 
+                    mapIsExpanded={mapIsExpanded}
+                    error={error}
+                    setError={setError}
+                    loading={loading}
+                    setLoading={setLoading}
+                ></LocationForm>
+                <Sites 
+                    maxNumOfSites={maxNumOfSites}
+                    error={error}
+                    setError={setError}
+                    loading={loading}
+                    setLoading={setLoading}
+                ></Sites>
             </motion.section>
             <motion.section 
                 initial={{ 

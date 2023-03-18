@@ -2,13 +2,14 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
+import { Dna } from 'react-loader-spinner';
 
 import { useSites, useUpdateSites, useCoords } from '../../../context/DataContext'
 import Site from './Site';
 
 import '../styles/Sites.scss';
 
-const Sites = ( {maxNumOfSites }) => {
+const Sites = ({ maxNumOfSites, error, setError, loading, setLoading }) => {
     const sites = useSites();
     const updateSites = useUpdateSites();
     const coords = useCoords();
@@ -23,6 +24,34 @@ const Sites = ( {maxNumOfSites }) => {
                 staggerChildren: 0.3
             }
         }
+    }
+
+    if(loading) {
+        return (
+            <div
+                style={{
+                    height: "55vh",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center"
+                }}
+            >
+                <Dna
+                    visible={true}
+                    height="150"
+                    width="150"
+                    ariaLabel="dna-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="dna-wrapper"
+                />
+                <p
+                    style={{
+                        fontSize: "1rem",
+                        fontWeight: 700
+                    }}
+                >One second, we're calculating your location...</p>
+            </div>
+        )
     }
 
     if(sites.length === 0) {
@@ -44,9 +73,17 @@ const Sites = ( {maxNumOfSites }) => {
             initial="hidden"
             animate="show"
         >
+            { error && <p className='sites__error'>{error}</p>}
+
             {
                 sites.map(site => (
-                    <Site key={site._id} site={site}></Site>
+                    <Site 
+                        key={site._id} 
+                        site={site}
+                        error={error}
+                        setError={setError}
+                        setLoading={setLoading}
+                    ></Site>
                 ))
             }
 
