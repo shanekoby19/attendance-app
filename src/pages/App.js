@@ -10,7 +10,9 @@ const App = () => {
         <AuthContextProvider>
             <DataContextProvider>
                 <RouterProvider router={UIRouter}>
-                    <div className='App'>
+                    <div 
+                        className='App'
+                        style={{ maxHeight: "100vh" }}>
                     </div>
                 </RouterProvider>
             </DataContextProvider>

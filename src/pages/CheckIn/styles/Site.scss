@@ -3,7 +3,6 @@
     flex-direction: column;
 
     &__header {
-        margin-top: 2rem;
 
         &__name {
             font-size: 1.4rem;
@@ -29,10 +28,6 @@
 
         &__checkIn {
             display: flex;
-            
-            &__button {
-                margin-right: 2rem;
-            }
         }
 
         &__distance {

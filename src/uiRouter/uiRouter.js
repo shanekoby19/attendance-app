@@ -37,7 +37,13 @@ const UIRouter = () => {
                     const res = await axios.get('http://localhost:3000/api/v1/keys', { withCredentials: true });
                     const apiKeys = {};
                     res.data.data.keys.forEach(key => apiKeys[key.name] = key.key)
-                    return apiKeys;
+
+                    const res2 = await axios.get('http://localhost:3000/api/v1/sites', { withCredentials: true });
+                    const maxNumOfSites = res2.data.data.nearbySites.length;
+                    return {
+                        apiKeys,
+                        maxNumOfSites,
+                    };
                 }
                 catch(err) {
                     const { message } = err.response.data;

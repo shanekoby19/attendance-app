@@ -1,15 +1,19 @@
-import Site from './Site';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 
 import { useSites, useUpdateSites, useCoords } from '../../../context/DataContext'
+import Site from './Site';
 
-const Sites = () => {
+import '../styles/Sites.scss';
+
+const Sites = ( {maxNumOfSites }) => {
     const sites = useSites();
     const updateSites = useUpdateSites();
     const coords = useCoords();
-    const [skipAmount, setSkipAmount] = useState(3);
+    const maxPages = maxNumOfSites % 3 !== 0 ? Math.floor(maxNumOfSites / 3) + 1 : maxNumOfSites / 3;
+    const [currentPage, setCurrentPage] = useState(1);
 
     const container = {
         hidden: { opacity: 0 },
@@ -25,18 +29,12 @@ const Sites = () => {
         return (<div></div>)
     }
 
-    const getNextSites = async () => {
+    const getNextSites = async (skipAmount) => {
         const [lng, lat] = coords.coordinates;
         
-
         axios
             .get(`http://localhost:3000/api/v1/sites?lng=${lng}&lat=${lat}&skip=${skipAmount}&limit=3`)
-            .then(response => {
-                updateSites(response.data.data.nearbySites)
-                if(response.data.data.nearbySites.length !== 3) {
-                    setSkipAmount(0);
-                }
-            });
+            .then(response => updateSites(response.data.data.nearbySites));
     }
 
     return (
@@ -46,24 +44,45 @@ const Sites = () => {
             initial="hidden"
             animate="show"
         >
-            { 
-                skipAmount !== 3 && 
-                <button onClick={() => {
-                    setSkipAmount((skipAmount) => skipAmount - 3);
-                    getNextSites();
-                }}>View Previous</button> 
-            }
             {
                 sites.map(site => (
                     <Site key={site._id} site={site}></Site>
                 ))
             }
-            { 
-                <button onClick={() => {
-                    setSkipAmount((skipAmount) => skipAmount + 3);
-                    getNextSites()
-                }}>View Next</button>
-            }
+
+             
+                <div 
+                    className='sites__btns'
+                    style={ currentPage * 3 === 3 ? { alignSelf: 'flex-end' } : {}}
+                >
+                    {
+                        currentPage !== 1 &&
+                            <button 
+                                className="sites__btns--previous"
+                                onClick={() => {
+                                    if(currentPage * 3 <= maxNumOfSites) {
+                                        getNextSites((currentPage - 2) * 3); 
+                                        setCurrentPage(currentPage - 1);
+                                    } else {
+                                        getNextSites((currentPage - 2) * 3); 
+                                        setCurrentPage(currentPage - 1);
+                                    }
+                                }}
+                            ><span className='sites__btns--previous--icon'><FaAngleDoubleLeft/></span>View Previous</button>
+                    }
+                    {
+                        currentPage !== maxPages &&
+                        <button 
+                            className="sites__btns--next"
+                            onClick={() => {
+                                if(currentPage * 3 <= maxNumOfSites) {
+                                    getNextSites(currentPage * 3);
+                                    setCurrentPage(currentPage + 1);
+                                }
+                            }}
+                        >View Next<span className='sites__btns--next--icon'><FaAngleDoubleRight/></span></button>
+                    }
+                </div>
         </motion.div>
     )
 }

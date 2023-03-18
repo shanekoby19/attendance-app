@@ -1,0 +1,44 @@
+.sites {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 55vh;
+
+    &__btns {
+        display: flex;
+        justify-content: space-between;
+
+        &--next, &--previous {
+            margin-top: 2rem;
+            font-size: 1.2rem;
+            font-weight: 300;
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            position: relative;
+            border-radius: 1rem;
+            background: linear-gradient(216deg, rgba(69,233,175,1) 0%, rgba(30,185,217,1) 100%);
+            color: white;
+            border: white;
+            
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        &--previous {
+            padding: 0.5rem 1rem 0.5rem 2rem;
+        }
+
+        &--next--icon, &--previous--icon  {
+            position: absolute;
+            top: 0.6rem;
+        }
+
+        &--next--icon {
+            right: 0.3rem;
+        }
+
+        &--previous--icon {
+            left: 0.3rem;
+        }
+    }
+}

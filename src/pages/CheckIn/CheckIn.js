@@ -11,7 +11,7 @@ import './CheckIn.scss';
 const CheckIn = () => {
     const sites = useSites();
     const mapIsExpanded = sites.length === 0;
-    const apiKeys = useLoaderData();
+    const { apiKeys, maxNumOfSites } = useLoaderData();
 
     return (
         <div className='checkIn'>
@@ -24,7 +24,7 @@ const CheckIn = () => {
                 }}
             >
                 <LocationForm apiKeys={apiKeys} mapIsExpanded={mapIsExpanded}></LocationForm>
-                <Sites></Sites>
+                <Sites maxNumOfSites={maxNumOfSites}></Sites>
             </motion.section>
             <motion.section 
                 initial={{ 

@@ -9,9 +9,12 @@ const getSites = async (req, res) => {
     // Define a boolean flag to determine if a match stage was used.
     let matchStageUsed = false;
 
-    // Define the base pipeline query to select all points within your current location.
-    const pipeline = [
-        {
+    // Define the base pipeline query.
+    const pipeline = [];
+
+    // Pass the geonear stage only if a longitude and latitude are present in the query.
+    if(req.query.lng && req.query.lat) {
+        pipeline.push({
             $geoNear: {
                 near: {
                     type: "Point",
@@ -19,9 +22,9 @@ const getSites = async (req, res) => {
                 },
                 distanceMultiplier: 0.000621371,
                 distanceField: "distance.miles"
-            },   
-        }
-    ];
+            } 
+        })
+    }
 
 
     // Define the match stage early as there might be multiple match objects.
