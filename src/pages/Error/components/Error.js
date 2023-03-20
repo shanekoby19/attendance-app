@@ -9,10 +9,10 @@ const Error = ({ message, status }) => {
                     width: "40%"
                 }}
             >
-                <img 
+                <img
                     className='error__image'
                     src='./images/error.jpg'
-                    alt="Business man fills out a calendar."
+                    alt="People experiencing an error"
                 ></img>
                 <a href="https://www.freepik.com/free-vector/tiny-people-examining-operating-system-error-warning-web-page-isolated-flat-illustration_11235921.htm#query=error&position=0&from_view=search&track=sph"
                     style={{

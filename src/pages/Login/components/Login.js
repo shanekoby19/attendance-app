@@ -168,6 +168,25 @@ const Login = () => {
                         style={{ backgroundColor: "#33aa26", border: "none", marginTop: "1rem" }}
                         onClick={loginUser}
                     >{btnText}</motion.button>
+
+                    <motion.button
+                        initial={{
+                            height: "100%",
+                            width: "100%"
+                        }}
+                        whileHover={{
+                            y: -5,
+                            boxShadow: "0px 10px 20px 2px rgba(0, 0, 0, 0.3)"
+                        }}
+                        whileTap={{
+                            y: 0,
+                            boxShadow: "0px 1px 5px 1px rgba(0, 0, 0, 0.3)"
+                        }}
+                        animate={controls}
+                        className='primary__button'
+                        style={{ backgroundColor: "#f6681b", border: "none", marginTop: "1rem" }}
+                        onClick={() => navigate('/signup')}
+                    >Signup</motion.button>
                 </div>
             </motion.section>
         </div>
