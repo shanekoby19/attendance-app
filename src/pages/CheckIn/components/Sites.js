@@ -2,10 +2,11 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
-import { Dna } from 'react-loader-spinner';
+
 
 import { useSites, useUpdateSites, useCoords } from '../../../context/DataContext'
 import Site from './Site';
+import Loader from '../../Miscellaneous/components/Loader';
 
 import '../styles/Sites.scss';
 
@@ -27,31 +28,7 @@ const Sites = ({ maxNumOfSites, error, setError, loading, setLoading }) => {
     }
 
     if(loading) {
-        return (
-            <div
-                style={{
-                    height: "55vh",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center"
-                }}
-            >
-                <Dna
-                    visible={true}
-                    height="150"
-                    width="150"
-                    ariaLabel="dna-loading"
-                    wrapperStyle={{}}
-                    wrapperClass="dna-wrapper"
-                />
-                <p
-                    style={{
-                        fontSize: "1rem",
-                        fontWeight: 700
-                    }}
-                >One second, we're calculating your location...</p>
-            </div>
-        )
+        <Loader />
     }
 
     if(sites.length === 0) {
