@@ -7,6 +7,7 @@ import axios from 'axios';
 
 import Error from '../pages/Error/components/Error';
 import Login from '../pages/Login/components/Login';
+import Signup from '../pages/Signup/components/Signup';
 import CheckIn from '../pages/CheckIn/CheckIn';
 import CheckInLink from '../pages/CheckInLink/components/CheckInLink';
 
@@ -30,8 +31,11 @@ const UIRouter = () => {
             element: <Login />,
         },
         {
+            path: '/signup',
+            element: <Signup />,
+        },
+        {
             path: '/checkin',
-            index: true,
             loader: async () => {
                 await isAuthenticated();
                 try {
@@ -58,7 +62,8 @@ const UIRouter = () => {
             path: '/checkin/link',
             loader: async () => {
                 await isAuthenticated();
-                return {}
+                const res = await axios.get('https://api.qrserver.com/v1/create-qr-code/?data="http://localhost:3001/checkin/link/auth"&size=200x200')
+                return res.data;
             },
             element: <CheckInLink />,
             errorElement: <ErrorBoundary />

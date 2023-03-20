@@ -1,0 +1,47 @@
+.parent {
+    font-size: 1.4rem;
+    font-weight: 300;
+    width: 70%;
+    background-color: lightblue;
+    padding: 3rem 1rem;
+
+    &__header {
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        text-align: center;
+    }
+
+    &__group {
+        &--section {
+            display: flex;
+            justify-content: center;
+        }
+
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+        align-self: center;
+        width: 30%;
+
+        &:first-child {
+            margin-right: 4rem;
+        }
+
+        & > input {
+            font-size: 1.2rem;
+            padding: 0.5rem 0rem 0.5rem 1rem;
+            border-radius: 0.6rem;
+        }
+
+        & > input:active, & > input:focus {
+            outline: green;
+            border: 2px solid green;
+        }
+
+        & > label {
+            font-size: 1.4rem;
+            margin: 0rem 0rem 0.3rem 0.3rem;
+        }
+    }
+}
