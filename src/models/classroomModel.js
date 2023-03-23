@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { userSchema } = require('./userModel');
+const { childSchema } = require('./childModel');
 
 const classroomSchema = new mongoose.Schema({
     name: {
@@ -15,6 +16,9 @@ const classroomSchema = new mongoose.Schema({
     },
     teacherAssistant: {
         type: userSchema
+    },
+    children: {
+        type: [childSchema]
     }
 })
 
