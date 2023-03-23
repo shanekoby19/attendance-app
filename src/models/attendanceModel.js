@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const { guardianSchema } = require('./guardianModel');
-const { parentSchema } = require('./parentModel');
+const { guardianSchema } = require('./secondaryGuardianModel');
+const { parentSchema } = require('./primaryGuardianModel');
 const { userSchema } = require('./userModel');
 
 const attendanceSchema = new mongoose.Schema({
