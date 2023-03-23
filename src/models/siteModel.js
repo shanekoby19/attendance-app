@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { classroomSchema } = require('./classroomModel');
 
 const siteSchema = new mongoose.Schema({
     program: {
@@ -12,6 +13,9 @@ const siteSchema = new mongoose.Schema({
     site: {
         type: String,        
         required: [true, 'A site must have a name.']
+    },
+    classrooms: {
+        type: [classroomSchema]
     },
     location: {
         address: {
