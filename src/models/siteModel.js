@@ -38,8 +38,7 @@ const siteSchema = new mongoose.Schema({
                 minlength: [2, 'You must provide a latitude and a longitude for this coordinate point.'],
                 maxLength: [2, 'You must only provide two coordinate points for this geoJSON object (lat, lon).']
             }
-        },
-        required: [true, 'A site must have a location']
+        }
     }
 });
 

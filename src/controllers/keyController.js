@@ -1,4 +1,4 @@
-const Key = require('../models/keyModel');
+const { Key } = require('../models/keyModel');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
 

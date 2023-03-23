@@ -34,7 +34,7 @@ const primaryGuardianSchema = new mongoose.Schema({
         required: [true, 'A primary guardian must have a profile picture.']
     },
     additionalGuardians: {
-        type: [guardianSchema]
+        type: [secondaryGuardianSchema]
     }
 });
 

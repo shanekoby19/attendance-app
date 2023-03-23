@@ -29,12 +29,15 @@ const getChild = errorCatcher(async (req, res, next) => {
         lastName: req.query?.lastName
     }
 
+    // Strip the query of anything that undefined.
+    Object.keys(query).forEach((key) => query[key] === undefined ? delete query[key] : null)
+
     // Find the child based on the query.
-    const child = await Child.find(query);
+    const child = await Child.findOne(query);
 
     // If the child isn't found send an error back.
     if(!child) {
-        next(new AttendanceError(`Sorry, we couldn't find a child with that name in the database.`));
+        return next(new AttendanceError(`Sorry, we couldn't find a child with that name in the database.`, 400, 'fail'));
     }
 
     res.status(200).json({
@@ -54,7 +57,7 @@ const getChildById = errorCatcher(async (req, res, next) => {
 
     // If the child isn't found send an error back.
     if(!child) {
-        next(new AttendanceError(`Sorry, we couldn't find a child with that id in the database.`));
+        return next(new AttendanceError(`Sorry, we couldn't find a child with that id in the database.`, 400, 'fail'));
     }
 
     res.status(200).json({
@@ -69,7 +72,7 @@ const updateChild = errorCatcher(async (req, res, next) => {
     // Create the child query.
     const childId = req.params?.id;
 
-    // Delete any upwanted properties from req.body
+    // Delete any unwanted properties from req.body
     const keysToKeep = ['firstName', 'lastName', 'profileImage'];
     let childUpdates = {};
     Object.entries(req.body).forEach(([key, value]) => {
@@ -79,7 +82,9 @@ const updateChild = errorCatcher(async (req, res, next) => {
     })
 
     // Find the child based on the query.
-    const child = await Child.findByIdAndUpdate(childId, childUpdates);
+    const child = await Child.findByIdAndUpdate(childId, childUpdates, {
+        new: true,
+    });
 
     res.status(200).json({
         status: 'success',
@@ -95,7 +100,7 @@ const deleteChild = errorCatcher(async (req, res, next) => {
 
     // If no child id is provided return an error.
     if(!childId) {
-        return next(new AttendanceError('You must send a child id to delete a child.'));
+        return next(new AttendanceError('You must send a child id to delete a child.', 400, 'fail'));
     }
 
     // Delete the child and send a response.

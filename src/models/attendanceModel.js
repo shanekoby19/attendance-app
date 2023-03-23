@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const { guardianSchema } = require('./secondaryGuardianModel');
-const { parentSchema } = require('./primaryGuardianModel');
+const { secondaryGuardianSchema } = require('./secondaryGuardianModel');
+const { primaryGuardianSchema } = require('./primaryGuardianModel');
 const { userSchema } = require('./userModel');
 
 const attendanceSchema = new mongoose.Schema({
@@ -13,19 +13,19 @@ const attendanceSchema = new mongoose.Schema({
         default: new Date(),
     },
     dropOffParent: {
-        type: parentSchema,
+        type: primaryGuardianSchema,
     },
     dropOffGuardian: {
-        type: guardianSchema,
+        type: secondaryGuardianSchema,
     },
     checkedInBy: {
         type: userSchema,
     },
     pickUpParent: {
-        type: parentSchema,
+        type: primaryGuardianSchema,
     },
     pickUpGuardian: {
-        type: guardianSchema,
+        type: secondaryGuardianSchema,
     },
     checkedOutBy: {
         type: userSchema,
