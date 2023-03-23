@@ -2,15 +2,7 @@ const mongoose = require('mongoose');
 const { classroomSchema } = require('./classroomModel');
 
 const siteSchema = new mongoose.Schema({
-    program: {
-        type: String,
-        required: [true, 'A site must have a program name.'],
-        enum: [{
-            values: ['Clark County', 'Monmouth Middlesex', 'Wisconsin', 'Camden Philadelphia'],
-            message: '{VALUE} is not a supported program please use "Clark County", "Monmouth Middlesex", "Wisconsin", or "Camden Philadelphia".'
-        }]
-    },
-    site: {
+    name: {
         type: String,        
         required: [true, 'A site must have a name.']
     },
@@ -46,11 +38,17 @@ const siteSchema = new mongoose.Schema({
                 minlength: [2, 'You must provide a latitude and a longitude for this coordinate point.'],
                 maxLength: [2, 'You must only provide two coordinate points for this geoJSON object (lat, lon).']
             }
-        }
+        },
+        required: [true, 'A site must have a location']
     }
 });
 
 // Create a 2dsphere index on the siteSchema to speed up our geo queries.
 siteSchema.index({ "location.coords": '2dsphere' });
 
-module.exports = mongoose.model('Site', siteSchema);
+const Site = mongoose.model('Site', siteSchema);
+
+module.exports = {
+    Site,
+    siteSchema
+}
