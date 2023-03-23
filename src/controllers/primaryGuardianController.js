@@ -2,7 +2,7 @@ const { PrimaryGuardian } = require('../models/primaryGuardianModel');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
 
-const addPrimaryGuardian = errorCatcher(async (res, res, next) => {
+const addPrimaryGuardian = errorCatcher(async (req, res, next) => {
     // Create the primary guardian object to add to the database.
     const reqPrimaryGuardian = {
         firstName: req.body.firstName,
@@ -31,13 +31,15 @@ const getPrimaryGuardians = errorCatcher(async (req, res, next) => {
         phoneNumber: req.query.phoneNumber
     }
 
+    console.log(query);
+
     // Remove undefined query options from the query.
     Object.keys(query).forEach(key => query[key] === undefined ? delete query[key] : null);
 
     // Attempt to find primaryGuardians given the query.
     const primaryGuardians = await PrimaryGuardian.find(query);
 
-    if(primiaryGuardians.length === 0) {
+    if(primaryGuardians.length === 0) {
         return next(new AttendanceError('Sorry, we were unable to find any users with the given query.', 400, 'fail'))
     }
 
@@ -54,7 +56,7 @@ const getPrimaryGuardianById = errorCatcher(async (req, res, next) => {
 
     // Attempt to find primaryGuardians given the id.
     const primaryGuardian = await PrimaryGuardian.findById(id);
-
+    
     if(!primaryGuardian) {
         return next(new AttendanceError('Sorry, we were unable to find a primary guardian with the given id.', 400, 'fail'))
     }
@@ -80,15 +82,15 @@ const updatePrimaryGuardian = errorCatcher(async (req, res, next) => {
     }
 
     // Remove any keys that are undefined before updating the primary guardian.
-    Object.keys(updatedPrimaryGuardian).forEach(key => updatePrimaryGuardian[key] === undefined ? delete updatePrimaryGuardian[key]: null);
+    Object.keys(updatedPrimaryGuardian).forEach(key => updatedPrimaryGuardian[key] === undefined ? delete updatedPrimaryGuardian[key]: null);
 
     // Attempt to find primaryGuardians given the id.
-    const primaryGuardian = await PrimaryGuardian.updateOne(id, updatePrimaryGuardian, {
+    const primaryGuardian = await PrimaryGuardian.findByIdAndUpdate(id, updatedPrimaryGuardian, {
         new: true,
     });
 
     res.status(200).json({
-        status: success,
+        status: 'success',
         data: primaryGuardian,
     })
 });
@@ -98,7 +100,7 @@ const deletePrimaryGuardian = errorCatcher(async (req, res, next) => {
     const id = req.params.id;
 
     // Attempt to delete the guardian and send a response.
-    await PrimaryGuardian.deleteOne(id);
+    await PrimaryGuardian.findByIdAndDelete(id);
 
     res.status(204).json({
         status: 'success',

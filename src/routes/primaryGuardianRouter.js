@@ -1,7 +1,7 @@
 const express = require('express');
 const {
     addPrimaryGuardian,
-    getPrimaryGuardian,
+    getPrimaryGuardians,
     getPrimaryGuardianById,
     updatePrimaryGuardian,
     deletePrimaryGuardian
@@ -12,11 +12,13 @@ const primaryGuardianRouter = express.Router();
 
 primaryGuardianRouter
     .route('/')
-    .get(authController.isAuthenticated, authController.isAuthorized('admin'), getPrimaryGuardian)
+    .get(authController.isAuthenticated, authController.isAuthorized('admin'), getPrimaryGuardians)
     .post(authController.isAuthenticated, authController.isAuthorized('admin'), addPrimaryGuardian);
 
 primaryGuardianRouter
     .route('/:id')
     .get(authController.isAuthenticated, authController.isAuthorized('admin'), getPrimaryGuardianById)
     .patch(authController.isAuthenticated, authController.isAuthorized('admin'), updatePrimaryGuardian)
-    .delete(authController.isAuthenticated, authController.isAuthorized('admin'), deletePrimaryGuardian)
+    .delete(authController.isAuthenticated, authController.isAuthorized('admin'), deletePrimaryGuardian);
+
+module.exports = primaryGuardianRouter;

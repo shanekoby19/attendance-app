@@ -12,6 +12,7 @@ const keyRouter = require('../routes/keyRouter.js');
 const userRouter = require('../routes/userRouter.js');
 const authRouter = require('../routes/authRouter.js');
 const childRouter = require('../routes/childRouter.js');
+const primaryGuardianRouter = require('../routes/primaryGuardianRouter');
 
 
 // Create our app.
@@ -43,7 +44,8 @@ app.use('/api/v1/sites', siteRouter);
 app.use('/api/v1/keys', keyRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/child', childRouter);
+app.use('/api/v1/children', childRouter);
+app.use('/api/v1/primary-guardians', primaryGuardianRouter)
 
 // Error handling middleware
 app.use(errorController);
