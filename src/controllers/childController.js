@@ -1,8 +1,18 @@
 const { Child } = require('../models/childModel');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
+const { PrimaryGuardian } = require('../models/primaryGuardianModel');
 
 const addChild = errorCatcher(async (req, res, next) => {
+    const primaryGuardianId = req.params.id;
+
+    // Find the primary guardian given the primary guardian id.
+    const primaryGuardian = await PrimaryGuardian.findById(primaryGuardianId);
+
+    if(!primaryGuardian) {
+        return next(new AttendanceError('Sorry, you must provide a valid parent to add this child to.', 400, 'fail'))
+    }
+
     // Get child info from the request.
     const reqChild = {
         firstName: req.body.firstName,
@@ -10,14 +20,16 @@ const addChild = errorCatcher(async (req, res, next) => {
         profileImage: req.body.profileImage,
     }
 
-    // Create the child use the child model.
+    // Create the child using the child model and then add the child to the parent document.
     const child = await Child.create(reqChild);
+    primaryGuardian.children.push(child);
+    await primaryGuardian.save();
 
     // Send the child back in the response.
     res.status(201).json({
         status: 'success',
         data: {
-            child
+            primaryGuardian
         }
     })
 });

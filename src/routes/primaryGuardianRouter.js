@@ -7,6 +7,7 @@ const {
     deletePrimaryGuardian
 } = require('../controllers/primaryGuardianController');
 const authController = require('../controllers/authController');
+const childRouter = require('./childRouter');
 
 const primaryGuardianRouter = express.Router();
 
@@ -20,5 +21,8 @@ primaryGuardianRouter
     .get(authController.isAuthenticated, authController.isAuthorized('admin'), getPrimaryGuardianById)
     .patch(authController.isAuthenticated, authController.isAuthorized('admin'), updatePrimaryGuardian)
     .delete(authController.isAuthenticated, authController.isAuthorized('admin'), deletePrimaryGuardian);
+
+primaryGuardianRouter
+    .use('/:id/children', childRouter)
 
 module.exports = primaryGuardianRouter;

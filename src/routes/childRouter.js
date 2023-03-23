@@ -8,7 +8,7 @@ const {
 } = require('../controllers/childController');
 const authController = require('../controllers/authController');
 
-const childRouter = express.Router();
+const childRouter = express.Router({ mergeParams: true });
 
 childRouter
     .route('/')
