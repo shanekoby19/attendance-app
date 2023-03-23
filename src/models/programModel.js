@@ -15,3 +15,10 @@ const programSchema = new mongoose.Schema({
         type: [userSchema],
     }
 })
+
+const Program = mongoose.model('Program', programSchema);
+
+module.exports = {
+    Program,
+    programSchema
+}

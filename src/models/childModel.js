@@ -9,12 +9,12 @@ const childSchema = new mongoose.Schema({
     },
     lastName: {
         type: 'String',
-        required: [true, 'A parent must have a first name.'],
+        required: [true, 'A child must have a last name.'],
         trim: true,
     },
     profileImage: {
         type: 'String',
-        required: [true, 'A parent must have a profile picture.']
+        required: [true, 'A child must have a profile picture.']
     },
     attendance: {
         type: [attendanceSchema]

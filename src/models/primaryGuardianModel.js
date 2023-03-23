@@ -10,7 +10,7 @@ const primaryGuardianSchema = new mongoose.Schema({
     },
     lastName: {
         type: 'String',
-        required: [true, 'A primary guardian must have a first name.'],
+        required: [true, 'A primary guardian must have a last name.'],
         trim: true,
     },
     email: {
