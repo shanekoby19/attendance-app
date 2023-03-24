@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { attendanceSchema } = require('./attendanceModel');
 
 const childSchema = new mongoose.Schema({
     firstName: {
@@ -16,8 +15,10 @@ const childSchema = new mongoose.Schema({
         type: 'String',
         required: [true, 'A parent must have a profile picture.']
     },
-    attendance: {
-        type: [attendanceSchema]
+    primaryGuardian: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'PrimaryGuardian',
+        required: [true, 'A child must have a primary guardian.']
     }
 });
 

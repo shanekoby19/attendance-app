@@ -1,7 +1,4 @@
 const mongoose = require('mongoose');
-const { guardianSchema } = require('./guardianModel');
-const { parentSchema } = require('./parentModel');
-const { userSchema } = require('./userModel');
 
 const attendanceSchema = new mongoose.Schema({
     timeIn: {
@@ -12,23 +9,34 @@ const attendanceSchema = new mongoose.Schema({
         type: 'Date',
         default: new Date(),
     },
-    dropOffParent: {
-        type: parentSchema,
+    dropOffPrimaryGuardian: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'PrimaryGuardian'
     },
-    dropOffGuardian: {
-        type: guardianSchema,
+    dropOffSecondaryGuardian: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'SecondaryGuardian'
     },
     checkedInBy: {
-        type: userSchema,
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
     },
-    pickUpParent: {
-        type: parentSchema,
+    pickUpPrimaryGuardian: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'PrimaryGuardian'
     },
-    pickUpGuardian: {
-        type: guardianSchema,
+    pickUpSecondaryGuardian: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'SecondaryGuardian'
     },
     checkedOutBy: {
-        type: userSchema,
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+    },
+    child: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'Child',
+        required: [true, 'An attendance record must belong to a child.']
     }
 });
 

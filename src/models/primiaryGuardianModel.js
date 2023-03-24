@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { childSchema } = require('./childModel');
-const { guardianSchema } = require('./guardianModel');
+const { guardianSchema } = require('./secondaryGuardianModel');
 
 const parentSchema = new mongoose.Schema({
     firstName: {
@@ -26,9 +26,12 @@ const parentSchema = new mongoose.Schema({
         type: 'String',
         required: [true, 'A parent must have a password.']
     },
-    children: {
-        type: [childSchema]
-    },
+    children: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'Child',
+        },
+    ],
     profileImage: {
         type: 'String',
         required: [true, 'A parent must have a profile picture.']

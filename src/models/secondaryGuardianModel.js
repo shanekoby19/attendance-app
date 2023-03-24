@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const guardianSchema = new mongoose.Schema({
+const secondaryGuardianSchema = new mongoose.Schema({
     firstName: {
         type: 'String',
         required: [true, 'A guardian must have a first name.'],
@@ -26,9 +26,9 @@ const guardianSchema = new mongoose.Schema({
     }
 });
 
-const Guardian = mongoose.model('Guardian', guardianSchema);
+const SecondaryGuardian = mongoose.model('SecondaryGuardian', secondaryGuardianSchema);
 
 module.exports = {
-    guardianSchema,
-    Guardian
+    secondaryGuardianSchema,
+    SecondaryGuardian
 }
