@@ -1,4 +1,4 @@
-const Site = require('../models/siteModel');
+const { Site } = require('../models/siteModel');
 const { Client } = require('@googlemaps/google-maps-services-js');
 const mongoose = require('mongoose');
 

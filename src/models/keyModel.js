@@ -14,4 +14,9 @@ const keySchema = new Schema({
     }
 });
 
-module.exports = mongoose.model('Key', keySchema);
+const Key = mongoose.model('Key', keySchema);
+
+module.exports = {
+    Key,
+    keySchema
+}

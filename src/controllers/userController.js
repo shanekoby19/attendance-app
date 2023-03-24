@@ -1,4 +1,4 @@
-const User = require('../models/userModel');
+const { User } = require('../models/userModel');
 const errorCatcher = require('../error/errorCatcher');
 
 const getUsers = errorCatcher(async (req, res, next) => {
