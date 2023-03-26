@@ -2,6 +2,7 @@ const { Child } = require('../models/childModel');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
 const { PrimaryGuardian } = require('../models/primaryGuardianModel');
+const mongoose = require('mongoose');
 
 const addChild = errorCatcher(async (req, res, next) => {
     const primaryGuardianId = req.params.id;
@@ -18,11 +19,14 @@ const addChild = errorCatcher(async (req, res, next) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         profileImage: req.body.profileImage,
+        primaryGuardian: primaryGuardian._id
     }
 
     // Create the child using the child model and then add the child to the parent document.
     const child = await Child.create(reqChild);
-    primaryGuardian.children.push(child);
+
+    primaryGuardian.children.push(child._id);
+
     await primaryGuardian.save();
 
     // Send the child back in the response.
@@ -34,7 +38,7 @@ const addChild = errorCatcher(async (req, res, next) => {
     })
 });
 
-const getChild = errorCatcher(async (req, res, next) => {
+const getChildren = errorCatcher(async (req, res, next) => {
     // Create the child query.
     const query = {
         firstName: req.query?.firstName,
@@ -45,24 +49,24 @@ const getChild = errorCatcher(async (req, res, next) => {
     Object.keys(query).forEach((key) => query[key] === undefined ? delete query[key] : null)
 
     // Find the child based on the query.
-    const child = await Child.findOne(query);
+    const children = await Child.find(query);
 
     // If the child isn't found send an error back.
-    if(!child) {
+    if(children.length === 0) {
         return next(new AttendanceError(`Sorry, we couldn't find a child with that name in the database.`, 400, 'fail'));
     }
 
     res.status(200).json({
         status: 'success',
         data: {
-            child
+            children
         }
     });
 });
 
 const getChildById = errorCatcher(async (req, res, next) => {
     // Create the child query.
-    const childId = req.params?.id;
+    const childId = req.params?.childId;
 
     // Find the child based on the query.
     const child = await Child.findById(childId);
@@ -107,16 +111,28 @@ const updateChild = errorCatcher(async (req, res, next) => {
 });
 
 const deleteChild = errorCatcher(async (req, res, next) => {
+    // Get the parent based on the url id parameter.
+    const primaryGuardianId = req.params?.id
+
+    // Ensure a valid primary guardian id was sent in the request.
+    const primaryGuardian = await PrimaryGuardian.findById(primaryGuardianId);
+
+    if(!primaryGuardian) {
+        return next(new AttendanceError('A primary guardian must be sent to delete this child.', 400, 'fail'))
+    }
+
     // Get the child id from the request
-    const childId = req.params?.id
+    const childId = req.params?.childId
+
+    const child = await Child.findById(childId);;
 
     // If no child id is provided return an error.
-    if(!childId) {
-        return next(new AttendanceError('You must send a child id to delete a child.', 400, 'fail'));
+    if(!child) {
+        return next(new AttendanceError('The child you sent does not exists in the database.', 400, 'fail'));
     }
 
     // Delete the child and send a response.
-    await Child.deleteOne({ _id: childId });
+    await Child.findByIdAndDelete(childId);
 
     res.status(204).json({
         status: 'success',
@@ -126,7 +142,7 @@ const deleteChild = errorCatcher(async (req, res, next) => {
 
 module.exports = {
     addChild,
-    getChild,
+    getChildren,
     getChildById,
     updateChild,
     deleteChild

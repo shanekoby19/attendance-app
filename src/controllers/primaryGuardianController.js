@@ -10,7 +10,7 @@ const addPrimaryGuardian = errorCatcher(async (req, res, next) => {
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
         password: req.body.password,
-        profileImage: req.body.profileImage,
+        profileImage: req.body.profileImage
     }
 
     // Create the primary guardian in the database and send it back to the user.

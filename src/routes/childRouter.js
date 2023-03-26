@@ -1,7 +1,7 @@
 const express = require('express');
 const { 
     addChild,
-    getChild,
+    getChildren,
     getChildById,
     updateChild,
     deleteChild
@@ -12,11 +12,11 @@ const childRouter = express.Router({ mergeParams: true });
 
 childRouter
     .route('/')
-    .get(authController.isAuthenticated, authController.isAuthorized('admin'), getChild)
+    .get(authController.isAuthenticated, authController.isAuthorized('admin'), getChildren)
     .post(authController.isAuthenticated, authController.isAuthorized('admin'), addChild)
 
 childRouter
-    .route('/:id')
+    .route('/:childId')
     .get(authController.isAuthenticated, authController.isAuthorized('admin'), getChildById)
     .patch(authController.isAuthenticated, authController.isAuthorized('admin'), updateChild)
     .delete(authController.isAuthenticated, authController.isAuthorized('admin'), deleteChild)
