@@ -1,4 +1,5 @@
 const { PrimaryGuardian } = require('../models/primaryGuardianModel');
+const { Child } = require('../models/childModel');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
 
@@ -30,8 +31,6 @@ const getPrimaryGuardians = errorCatcher(async (req, res, next) => {
         email: req.query.email,
         phoneNumber: req.query.phoneNumber
     }
-
-    console.log(query);
 
     // Remove undefined query options from the query.
     Object.keys(query).forEach(key => query[key] === undefined ? delete query[key] : null);
@@ -98,6 +97,19 @@ const updatePrimaryGuardian = errorCatcher(async (req, res, next) => {
 const deletePrimaryGuardian = errorCatcher(async (req, res, next) => {
     // Get the id form the params
     const id = req.params.id;
+
+    // Find the primary guardian in the database.
+    const primaryGuardian = await PrimaryGuardian.findById(id);
+
+    if(!primaryGuardian) {
+        return next(new AttendanceError('The primary guardian you are trying to delete does not exist in the database.', 400, 'fail'));
+    }
+
+    // Create a promise for each deleted child.
+    const deletedChildPromises = primaryGuardian.children.map(async (child) => await Child.findByIdAndDelete(child._id));
+
+    // Delete all children.
+    Promise.all(deletedChildPromises);
 
     // Attempt to delete the guardian and send a response.
     await PrimaryGuardian.findByIdAndDelete(id);

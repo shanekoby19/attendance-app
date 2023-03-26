@@ -2,7 +2,6 @@ const { Child } = require('../models/childModel');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
 const { PrimaryGuardian } = require('../models/primaryGuardianModel');
-const mongoose = require('mongoose');
 
 const addChild = errorCatcher(async (req, res, next) => {
     const primaryGuardianId = req.params.id;
@@ -86,7 +85,14 @@ const getChildById = errorCatcher(async (req, res, next) => {
 
 const updateChild = errorCatcher(async (req, res, next) => {
     // Create the child query.
-    const childId = req.params?.id;
+    const childId = req.params?.childId;
+
+    // Ensure the primary guardian exists.
+    const primaryGuardian = await PrimaryGuardian.findById(req.params?.id)
+    
+    if(!primaryGuardian) {
+        return next(new AttendanceError('The primary guardian you are trying to update does not exist.', 400, 'fail'));
+    }
 
     // Delete any unwanted properties from req.body
     const keysToKeep = ['firstName', 'lastName', 'profileImage'];
@@ -101,6 +107,10 @@ const updateChild = errorCatcher(async (req, res, next) => {
     const child = await Child.findByIdAndUpdate(childId, childUpdates, {
         new: true,
     });
+    
+    if(!child) {
+        return next(new AttendanceError('The child you are trying to update does not exist.', 400, 'fail'))
+    }
 
     res.status(200).json({
         status: 'success',
@@ -118,17 +128,17 @@ const deleteChild = errorCatcher(async (req, res, next) => {
     const primaryGuardian = await PrimaryGuardian.findById(primaryGuardianId);
 
     if(!primaryGuardian) {
-        return next(new AttendanceError('A primary guardian must be sent to delete this child.', 400, 'fail'))
+        return next(new AttendanceError('The primary guardian you are trying to update does not exist.', 400, 'fail'))
     }
 
-    // Get the child id from the request
+    // Get the child id from the request and ensure it's valid.
     const childId = req.params?.childId
 
     const child = await Child.findById(childId);;
 
     // If no child id is provided return an error.
     if(!child) {
-        return next(new AttendanceError('The child you sent does not exists in the database.', 400, 'fail'));
+        return next(new AttendanceError('The child you are trying to delete does not exist in the database.', 400, 'fail'));
     }
 
     // Delete the child and send a response.
