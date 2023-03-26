@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 const  Dropzone = ({ file, setFile }) => {
     const onDrop = useCallback(acceptedFiles => {
       setFile(acceptedFiles[0]);
-    }, [])
+    }, [setFile])
     const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
   
     return (
