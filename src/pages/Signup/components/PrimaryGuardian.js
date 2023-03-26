@@ -223,7 +223,6 @@ const PrimaryGuardian = () => {
                     onClick={async () => {
                         setError('')
                         const formDetails = getFormDetails();
-                        console.log(formDetails);
                         if(formDetails.isFilledOut) {
                             
                         }

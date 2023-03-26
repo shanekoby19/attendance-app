@@ -57,7 +57,6 @@ const LocationForm = ({ mapIsExpanded, apiKeys, setError, setLoading }) => {
             types: ['address']
         },
         onPlaceSelected : (place) => {
-            console.log(place);
             setError('');
             fillAddressComponents(place.address_components);
 
