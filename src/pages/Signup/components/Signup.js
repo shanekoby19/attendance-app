@@ -1,6 +1,4 @@
-import { useState } from 'react';
-
-import Parent from './Parent';
+import PrimaryGuardian from './PrimaryGuardian';
 
 import '../styles/Signup.scss';
 
@@ -9,7 +7,7 @@ const Signup = () => {
 
     return (
         <div className='signup'>
-            <Parent />
+            <PrimaryGuardian />
         </div>
     )
 }

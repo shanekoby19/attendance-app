@@ -5,10 +5,10 @@ import validator from 'validator';
 import Dropzone from '../../Miscellaneous/components/Dropzone';
 import Loader from '../../Miscellaneous/components/Loader';
 
-import '../styles/Parent.scss';
+import '../styles/PrimaryGuardian.scss';
 
 
-const Parent = () => {
+const PrimaryGuardian = () => {
     const firstNameRef = useRef('');
     const lastNameRef = useRef('');
     const emailRef = useRef('');
@@ -18,8 +18,6 @@ const Parent = () => {
     const [file, setFile] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
-    console.log(error);
 
     if(loading) {
         <Loader 
@@ -107,7 +105,7 @@ const Parent = () => {
 
     return (
         <motion.section 
-            className='parent'
+            className='primary-guardian'
             initial={{
                 y: -100,
             }}
@@ -116,12 +114,12 @@ const Parent = () => {
                 transition: { duration: 1 }
             }}    
         >
-            <h2 className='parent__header'>Guardian Information</h2>
+            <h2 className='primary-guardian__header'>Guardian Information</h2>
 
-            <div className='parent__group--section'>
+            <div className='primary-guardian__group--section'>
 
                 {/* FIRST NAME INPUT */}
-                <div className='parent__group'>
+                <div className='primary-guardian__group'>
                     <label 
                         htmlFor="firstName"
                     >First Name</label>
@@ -134,7 +132,7 @@ const Parent = () => {
 
 
                 {/* LAST NAME INPUT */}
-                <div className='parent__group'>
+                <div className='primary-guardian__group'>
                     <label 
                         htmlFor="lastName"
                     >Last Name</label>
@@ -147,9 +145,9 @@ const Parent = () => {
             </div>
 
 
-            <div className='parent__group--section'>
+            <div className='primary-guardian__group--section'>
                 {/* EMAIL INPUT */}
-                <div className='parent__group'>
+                <div className='primary-guardian__group'>
                     <label 
                         htmlFor="email"
                     >Email</label>
@@ -162,7 +160,7 @@ const Parent = () => {
 
 
                 {/* PHONE INPUT */}
-                <div className='parent__group'>
+                <div className='primary-guardian__group'>
                     <label 
                         htmlFor="phone"
                     >Phone</label>
@@ -174,9 +172,9 @@ const Parent = () => {
                 </div>
             </div>
 
-            <div className='parent__group--section'>
+            <div className='primary-guardian__group--section'>
                 {/* PASSWORD INPUT */}
-                <div className='parent__group'>
+                <div className='primary-guardian__group'>
                     <label 
                         htmlFor="password"
                     >Password</label>
@@ -188,7 +186,7 @@ const Parent = () => {
                 </div>
 
                 {/* CONFIRM PASSWORD INPUT */}
-                <div className='parent__group'>
+                <div className='primary-guardian__group'>
                     <label 
                         htmlFor="confirmPassword"
                     >Confirm Password</label>
@@ -202,15 +200,15 @@ const Parent = () => {
 
 
 
-            <div className='parent__group--section'>
+            <div className='primary-guardian__group--section'>
                 <Dropzone file={file} setFile={setFile}></Dropzone>
             </div>
 
-            <div className='parent__group--section' style={{ color: "red" }}>
+            <div className='primary-guardian__group--section' style={{ color: "red" }}>
                 { error }
             </div>
 
-            <div className='parent__group--section' style={{ justifyContent: "space-between", width: "64%", margin: "0 auto" }}>
+            <div className='primary-guardian__group--section' style={{ justifyContent: "space-between", width: "64%", margin: "0 auto" }}>
                 <button
                     className='primary__button'
                     style={{
@@ -238,4 +236,4 @@ const Parent = () => {
     )
 }
 
-export default Parent;
+export default PrimaryGuardian;
