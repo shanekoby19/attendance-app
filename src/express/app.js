@@ -13,6 +13,7 @@ const userRouter = require('../routes/userRouter.js');
 const authRouter = require('../routes/authRouter.js');
 const childRouter = require('../routes/childRouter.js');
 const primaryGuardianRouter = require('../routes/primaryGuardianRouter');
+const secondaryGuardianRouter = require('../routes/secondaryGuardianRouter');
 const attendanceRouter = require('../routes/attendanceRouter');
 
 
@@ -48,6 +49,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/children', childRouter);
 app.use('/api/v1/primary-guardians', primaryGuardianRouter)
 app.use('/api/v1/attendance', attendanceRouter);
+app.use('/api/v1/secondary-guardians', secondaryGuardianRouter);
 
 // Error handling middleware
 app.use(errorController);

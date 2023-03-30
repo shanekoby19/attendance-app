@@ -8,6 +8,7 @@ const {
 } = require('../controllers/primaryGuardianController');
 const authController = require('../controllers/authController');
 const childRouter = require('./childRouter');
+const secondaryGuardianRouter = require('../routes/secondaryGuardianRouter');
 
 const primaryGuardianRouter = express.Router();
 
@@ -24,5 +25,8 @@ primaryGuardianRouter
 
 primaryGuardianRouter
     .use('/:id/children', childRouter)
+
+primaryGuardianRouter
+    .use('/:id/secondary-guardians', secondaryGuardianRouter);
 
 module.exports = primaryGuardianRouter;
