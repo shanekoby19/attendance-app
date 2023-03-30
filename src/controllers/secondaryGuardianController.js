@@ -37,8 +37,38 @@ const addSecondaryGuardian = errorCatcher(async (req, res, next) => {
             primaryGuardian
         }
     })
+});
+
+const getSecondaryGuardians = errorCatcher(async(req, res, next) => {
+    // Define the query.
+    const query = {
+        firstName: req.query.firstName,
+        lastName: req.query.lastName,
+        email: req.query.email,
+        phoneNumber: req.query.phoneNumber
+    }
+
+    // Remove unused keys from the query.
+    Object.keys(query).forEach(key => query[key] === undefined ? delete query[key] : null);
+
+    // Get the secondary guardians according to the query.
+    const secondaryGuardians = await SecondaryGuardian.find(query);
+
+    // Check to see if any secondary guardians were found.
+    if(secondaryGuardians.length === 0) {
+        return next(new AttendanceError('We could not find any secondary guardians given you parameters.', 400, 'fail'));
+    }
+
+    // Send the secondary guardians to the client.
+    res.status(200).json({
+        status: 'success',
+        data: {
+            secondaryGuardians,
+        }
+    })
 })
 
 module.exports = {
     addSecondaryGuardian,
+    getSecondaryGuardians
 }

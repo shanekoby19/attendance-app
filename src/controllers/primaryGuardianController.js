@@ -1,5 +1,6 @@
 const { PrimaryGuardian } = require('../models/primaryGuardianModel');
 const { Child } = require('../models/childModel');
+const { SecondaryGuardian, secondaryGuardianSchema } = require('../models/secondaryGuardianModel');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
 
@@ -110,6 +111,12 @@ const deletePrimaryGuardian = errorCatcher(async (req, res, next) => {
 
     // Delete all children.
     Promise.all(deletedChildPromises);
+
+    // Create a promise for each deleted secondary guardian
+    const deletedSecondaryGuardianPromises = primaryGuardian.secondaryGuardians.map(async (secondaryGuardian) => await SecondaryGuardian.findByIdAndDelete(secondaryGuardian._id))
+
+    // Delete all secondary Guardians.
+    Promise.all(deletedSecondaryGuardianPromises);
 
     // Attempt to delete the guardian and send a response.
     await PrimaryGuardian.findByIdAndDelete(id);
