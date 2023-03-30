@@ -33,13 +33,18 @@ const primaryGuardianSchema = new mongoose.Schema({
         type: 'String',
         required: [true, 'A primary guardian must have a profile picture.']
     },
-    additionalGuardians: {
-        type: [secondaryGuardianSchema]
-    }
+    secondaryGuardians: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'SecondaryGuardian'
+        }
+    ]
 });
 
 primaryGuardianSchema.pre(/^find/, function(next) {
-    this.populate('children');
+    this
+        .populate('children')
+        .populate('secondaryGuardians');
 
     next();
 });
