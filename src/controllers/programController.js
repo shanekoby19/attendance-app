@@ -91,14 +91,17 @@ const deleteProgram = errorCatcher(async(req, res, next) => {
     }
 
     // Perform a cascade delete of all classrooms.
-    const deletedClasroomPromises = program.sites.map(site => site.classrooms.map(async (classroom) => await Classroom.findByIdAndDelete(classroom._id)));
+    const deletedSitePromises = program.sites.map(async (siteId) => {
+        const site = await Site.findById(siteId);
 
-    await Promise.all(deletedClasroomPromises);
+        const deletedClassroomPromises = site.classrooms.map(async (classroomId) => await Classroom.findByIdAndDelete(classroomId));
 
-    // Perform a cascade delete of all sites.
-    const deletedSitePromises = program.sites.map(async(site) => await Site.findByIdAndDelete(site._id));
+        await Promise.all(deletedClassroomPromises);
 
-    await Promise.all(deletedSitePromises);
+        return await site.delete();
+    });
+
+    Promise.all(deletedSitePromises);
 
     // Try to delete the program from the database.
     await Program.findByIdAndDelete(programId);
