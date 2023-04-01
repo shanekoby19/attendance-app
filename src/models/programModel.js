@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const { siteSchema } = require('./siteModel');
-const { userSchema } = require('./userModel');
 
 const programSchema = new mongoose.Schema({
     name: {
@@ -8,12 +6,14 @@ const programSchema = new mongoose.Schema({
         trim: true,
         required: [true, 'A program must have a name'],
     },
-    sites: {
-        type: [siteSchema],
-    },
-    admins: {
-        type: [userSchema],
-    }
+    sites: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Site',
+    }],
+    admins: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }]
 })
 
 const Program = mongoose.model('Program', programSchema);

@@ -15,6 +15,7 @@ const childRouter = require('../routes/childRouter.js');
 const primaryGuardianRouter = require('../routes/primaryGuardianRouter');
 const secondaryGuardianRouter = require('../routes/secondaryGuardianRouter');
 const attendanceRouter = require('../routes/attendanceRouter');
+const programRouter = require('../routes/programRouter');
 
 
 // Create our app.
@@ -50,6 +51,7 @@ app.use('/api/v1/children', childRouter);
 app.use('/api/v1/primary-guardians', primaryGuardianRouter)
 app.use('/api/v1/attendance', attendanceRouter);
 app.use('/api/v1/secondary-guardians', secondaryGuardianRouter);
+app.use('/api/v1/programs', programRouter);
 
 // Error handling middleware
 app.use(errorController);

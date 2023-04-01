@@ -33,8 +33,8 @@ const primaryGuardianSchema = new mongoose.Schema({
         required: [true, 'A primary guardian must have a profile picture.']
     },
     secondaryGuardians: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'SecondaryGuardian'
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SecondaryGuardian'
     }]
 });
 
