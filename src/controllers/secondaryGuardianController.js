@@ -30,6 +30,8 @@ const addSecondaryGuardian = errorCatcher(async (req, res, next) => {
     // Add the newly created secondary guardian to the primary guardian of the request.
     primaryGuardian.secondaryGuardians.push(secondaryGuardian._id);
 
+    await primaryGuardian.save();
+
     // Send a response to the client.
     res.status(201).json({
         status: 'success',
@@ -37,6 +39,65 @@ const addSecondaryGuardian = errorCatcher(async (req, res, next) => {
             primaryGuardian
         }
     })
+});
+
+const updateSecondaryGuardian = errorCatcher(async (req, res, next) => {
+    const secondaryGuardianId = req.params.secondaryGuardianId;
+
+    // Create the update object use the request body.
+    const secondaryGuardianUpdates = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        phoneNumber: req.body.phoneNumber,
+        profileImage: req.body.profileImage
+    }
+
+    // Remove undefined properties
+    Object.keys(secondaryGuardianUpdates).forEach(key => secondaryGuardianUpdates[key] === undefined ? delete secondaryGuardianUpdates[key] : null);
+
+    // Attempt to update the secondary guardian.
+    const updatedSecondaryGuardian = await SecondaryGuardian.findByIdAndUpdate(secondaryGuardianId, secondaryGuardianUpdates, {
+        new: true
+    });
+
+    if(!updatedSecondaryGuardian) {
+        return next(new AttendanceError('Unable to find a secondary guardian with the given id.', 400, 'fail'));
+    }
+
+    // Send the updated secondary guardian back to the client.
+    res.status(200).json({
+        status: 'success',
+        data: {
+            updatedSecondaryGuardian
+        }
+    });
+});
+
+const deleteSecondaryGuardian = errorCatcher(async(req, res, next) => {
+    // Get the primary guardian id from the request parameters
+    const primaryGuardianId = req.params?.id;
+
+    // Find the primary guardian by their id.
+    const primaryGuardian = await PrimaryGuardian.findById(primaryGuardianId);
+
+    // If the primary guardian doesn't exist return an error.
+    if(!primaryGuardian) {
+        return next(new AttendanceError('The primary guardian given in the request does not exist', 400, 'fail'));
+    }
+
+    // Try to delete the secondary guardian from the database.
+    const secondaryGuardianId = req.params.secondaryGuardianId;
+
+    await SecondaryGuardian.findByIdAndDelete(secondaryGuardianId);
+
+    // Remove the secondary guardian from the primary guardian
+    primaryGuardian.secondaryGuardians = primaryGuardian.secondaryGuardians.filter(_id => _id !== secondaryGuardianId);
+
+    await primaryGuardian.save();
+
+    // Send a no-content response to the client.
+    res.status(204).json({});
 });
 
 const getSecondaryGuardians = errorCatcher(async(req, res, next) => {
@@ -70,5 +131,7 @@ const getSecondaryGuardians = errorCatcher(async(req, res, next) => {
 
 module.exports = {
     addSecondaryGuardian,
-    getSecondaryGuardians
+    getSecondaryGuardians,
+    updateSecondaryGuardian,
+    deleteSecondaryGuardian
 }
