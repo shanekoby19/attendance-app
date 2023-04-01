@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
-const { classroomSchema } = require('./classroomModel');
 
 const siteSchema = new mongoose.Schema({
     name: {
         type: String,        
         required: [true, 'A site must have a name.']
     },
-    classrooms: {
-        type: [classroomSchema]
-    },
+    classrooms: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Classroom'
+    }],
     location: {
         address: {
             type: String,

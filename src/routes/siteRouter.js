@@ -1,17 +1,25 @@
 const express = require('express');
-const siteController = require('../controllers/siteController');
+const {
+    getSites,
+    getSiteById,
+    addSite,
+    updateSite,
+    deleteSite,
+    getCoordinates
+} = require('../controllers/siteController');
+const authController = require('../controllers/authController');
 
-const siteRouter = express.Router();
+const siteRouter = express.Router({ mergeParams: true });
 
 siteRouter
     .route('/')
-    .get(siteController.getSites)
-    .post(siteController.getCoordinates, siteController.createSite)
+    .get(authController.isAuthenticated, getSites)
+    .post(authController.isAuthenticated, authController.isAuthorized('admin'), getCoordinates, addSite)
     
 siteRouter
-    .route('/:id')
-    .get(siteController.getSiteById)
-    .patch(siteController.updateSite)
-    .delete(siteController.deleteSite);
+    .route('/:siteId')
+    .get(authController.isAuthenticated, getSiteById)
+    .patch(authController.isAuthenticated, authController.isAuthorized('admin'), getCoordinates, updateSite)
+    .delete(authController.isAuthenticated, authController.isAuthorized('super admin'), deleteSite);
 
 module.exports = siteRouter;

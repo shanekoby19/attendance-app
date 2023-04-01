@@ -1,11 +1,12 @@
 const { Site } = require('../models/siteModel');
+const { Program } = require('../models/programModel');
+const { Classroom } = require('../models/classroomModel');
 const { Client } = require('@googlemaps/google-maps-services-js');
-const mongoose = require('mongoose');
 
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
 
-const getSites = async (req, res) => {
+const getSites = errorCatcher(async (req, res) => {
     // Define a boolean flag to determine if a match stage was used.
     let matchStageUsed = false;
 
@@ -108,12 +109,16 @@ const getSites = async (req, res) => {
             nearbySites: nearbySites
         }
     })
-};
+});
 
 const getSiteById = errorCatcher( async(req, res, next) => {
-    const { id: siteId } = req.params;
+    const siteId = req.params.siteId;
 
     const site = await Site.findById(siteId);
+
+    if(!site) {
+        return next(new AttendanceError('Unable to find a site with the given id', 400, 'fail'));
+    }
 
     res.status(200).json({
         status: 'success',
@@ -123,11 +128,21 @@ const getSiteById = errorCatcher( async(req, res, next) => {
     });
 });
 
-const createSite = async (req, res) => {
+const addSite = errorCatcher(async (req, res, next) => {
+    // Get the program id from the request parameters.
+    const programId = req.params.id;
 
+    // Find the program in the database.
+    const program = await Program.findById(programId);
+
+    if(!program) {
+        return next(new AttendanceError('Unable to find a program with the given id', 400, 'fail'));
+    }
+
+    // Define the new site.
     const newSite = await Site.create({
-        program: req.body.program,
-        site: req.body.site,
+        name: req.body.name,
+        classrooms: req.body.classrooms,
         location: {
             address: req.body.location.address,
             city: req.body.location.city,
@@ -139,32 +154,70 @@ const createSite = async (req, res) => {
         }
     });
 
+    // Add the new site to the program.
+    program.sites.push(newSite._id);
+
+    await program.save();
+
     res.status(201).json({
         status: 201,
         data: {
             site: newSite
         }
     })
-}
+});
 
-const updateSite = async (req, res) => {
-    const { id: siteId } = req.params;
+const updateSite = errorCatcher(async (req, res, next) => {
+    // Get the site id from the request parameters.
+    const siteId = req.params.siteId;
 
-    const updatedSite = await Site.findByIdAndUpdate(mongoose.Types.ObjectId(siteId), {
-        ...req.body
-    }, { 
+    // Define the update object.
+    const siteUpdates = {
+        name: req.body.name,
+        classrooms: req.body.classrooms,
+        location: {
+            address: req.body.location?.address,
+            city: req.body.location?.city,
+            state: req.body.location?.state,
+            zip: req.body.location?.zip,
+            coords: {
+                coordinates: req.body.location?.coords,
+                type: 'Point'
+            }
+        }
+    }
+
+    // Remove any unused fields.
+    Object.keys(siteUpdates).forEach(key => siteUpdates[key] === undefined ? delete siteUpdates[key] : null);
+
+    // Remove location key if it isn't used
+    if(!req.body.location) {
+        delete siteUpdates["location"]
+    }
+
+    // Attempt to update the site.
+    const updatedSite = await Site.findByIdAndUpdate(siteId, siteUpdates, {
         new: true
-    })
+    });
+
+    if(!updatedSite) {
+        return next(new AttendanceError('The site id given in the request is invalid.', 400, 'fail'));
+    }
 
     res.status(200).json({
         status: 200,
         data: {
-            updateSite: updatedSite
+            updatedSite
         }
     });
-}
+});
 
-const getCoordinates = async (req, res, next) => {
+const getCoordinates = errorCatcher(async (req, res, next) => {
+    // If a location isn't passed call the next middleware immediately. Used for passive updates.
+    if(!req.body.location) {
+        return next();
+    }
+
     // Destructor the location components from the request body.
     const { address, city, state, zip } = req.body.location;
     const fullAddress = `${address} ${city}, ${state} ${zip}`
@@ -181,36 +234,50 @@ const getCoordinates = async (req, res, next) => {
 
     // Try to get the geolocation data.
     // If successful we will store it on the req.body.location object
-    try {
-        const { data } = await client.geocode(args);
-        req.body.location.coords = [data.results[0].geometry.location.lng, data.results[0].geometry.location.lat];
-    }
-    catch(err) {
-        console.log(err);
-    }
+    const { data } = await client.geocode(args);
+    req.body.location.coords = [data.results[0].geometry.location.lng, data.results[0].geometry.location.lat];
 
     next();
-}
+});
 
-const deleteSite = async (req, res) => {
-    try {
-        await Site.findOneAndDelete(mongoose.Types.ObjectId(req.params.id));
-        res.status(204).json({
-            status: 'success',
-            data: null
-        })
-    } catch(err) {
-        res.status(400).json({
-            status: 'fail',
-            message: 'Invalid site id'
-        })
+const deleteSite = errorCatcher(async (req, res, next) => {
+    // Get the program id from the request parameters.
+    const programId = req.params.id;
+
+    // Find the program in the database.
+    const program = await Program.findById(programId);
+
+    if(!program) {
+        return next(new AttendanceError('The program you are trying to update does not exist', 400, 'fail'));
     }
-}
+
+    // Attempt to find the site in the database.
+    const siteId = req.params.siteId;
+    const site = await Site.findById(siteId);
+
+    if(!site) {
+        return next(new AttendanceError('Unable to find the site you are trying to delete', 400, 'fail'));
+    }
+
+    // Delete all the classrooms at this site.
+    const deletedClassroomPromises = site.classrooms.map(async (classroom) => await Classroom.findByIdAndDelete(classroom._id));
+    await Promise.all(deletedClassroomPromises);
+
+    // Delete the site in the database.
+    await Site.findByIdAndDelete(siteId);
+
+    // If the site is successfully deleted, remove it from the parent program.
+    program.sites = program.sites.filter(id => id.toString() !== siteId);
+
+    await program.save();
+
+    res.status(204).json({});
+});
 
 module.exports = {
     getSites,
     getSiteById,
-    createSite,
+    addSite,
     updateSite,
     getCoordinates,
     deleteSite
