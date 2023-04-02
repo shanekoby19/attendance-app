@@ -8,6 +8,7 @@ const {
     getCoordinates
 } = require('../controllers/siteController');
 const authController = require('../controllers/authController');
+const classroomRouter = require('../routes/classroomRouter');
 
 const siteRouter = express.Router({ mergeParams: true });
 
@@ -21,5 +22,8 @@ siteRouter
     .get(authController.isAuthenticated, getSiteById)
     .patch(authController.isAuthenticated, authController.isAuthorized('admin'), getCoordinates, updateSite)
     .delete(authController.isAuthenticated, authController.isAuthorized('super admin'), deleteSite);
+
+siteRouter
+    .use('/:siteId/classrooms', classroomRouter);
 
 module.exports = siteRouter;
