@@ -14,11 +14,6 @@ const childSchema = new mongoose.Schema({
     profileImage: {
         type: 'String',
         required: [true, 'A child must have a profile picture.']
-    },
-    primaryGuardian: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'PrimaryGuardian',
-        required: [true, 'A child must have a primary guardian.']
     }
 });
 

@@ -2,6 +2,7 @@ const { Child } = require('../models/childModel');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
 const { PrimaryGuardian } = require('../models/primaryGuardianModel');
+const { S3Client, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 const addChild = errorCatcher(async (req, res, next) => {
     const primaryGuardianId = req.params.id;
@@ -18,7 +19,6 @@ const addChild = errorCatcher(async (req, res, next) => {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         profileImage: req.body.profileImage,
-        primaryGuardian: primaryGuardian._id
     }
 
     // Create the child using the child model and then add the child to the parent document.
@@ -32,7 +32,7 @@ const addChild = errorCatcher(async (req, res, next) => {
     res.status(201).json({
         status: 'success',
         data: {
-            primaryGuardian
+            child
         }
     })
 });
@@ -84,38 +84,66 @@ const getChildById = errorCatcher(async (req, res, next) => {
 })
 
 const updateChild = errorCatcher(async (req, res, next) => {
-    // Create the child query.
-    const childId = req.params?.childId;
+    // Get the primary guardian id from the request parameters.
+    const primaryGuardianId = req.params.id;
 
     // Ensure the primary guardian exists.
-    const primaryGuardian = await PrimaryGuardian.findById(req.params?.id)
+    const primaryGuardian = await PrimaryGuardian.findById(primaryGuardianId)
     
     if(!primaryGuardian) {
         return next(new AttendanceError('The primary guardian you are trying to update does not exist.', 400, 'fail'));
     }
 
-    // Delete any unwanted properties from req.body
-    const keysToKeep = ['firstName', 'lastName', 'profileImage'];
-    let childUpdates = {};
-    Object.entries(req.body).forEach(([key, value]) => {
-        if(keysToKeep.includes(key)) {
-            childUpdates[key] = value;
-        }
-    })
+    let childUpdates = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+    };
+
+    Object.entries(childUpdates).forEach(key => childUpdates[key] === undefined ? delete childUpdates[key] : undefined);
+
+    const childId = req.params.childId;
+
+    // If a new profile image was sent delete the old one from S3.
+    if(req.file) {
+        // Store the profile image in the primary guardian updates object.
+        childUpdates.profileImage = req.body.profileImage;
+
+        // If a new profile image was sent delete the old old.
+        const child = await Child.findById(childId);
+
+        // Create a new S3 client with our credentials.
+        const client = new S3Client({
+            region: process.env.S3_REGION,
+            credentials: {
+                accessKeyId: process.env.S3_ACCESS_KEY,
+                secretAccessKey: process.env.S3_ACCESS_SECRET
+            }
+        });
+
+        // Define the delete parameters.
+        const params = { 
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: child.profileImage
+        };
+
+        // Define and send the delete command.
+        const deleteCommand = new DeleteObjectCommand(params);
+        await client.send(deleteCommand);
+    }
 
     // Find the child based on the query.
-    const child = await Child.findByIdAndUpdate(childId, childUpdates, {
+    const updatedChild = await Child.findByIdAndUpdate(childId, childUpdates, {
         new: true,
     });
     
-    if(!child) {
+    if(!updatedChild) {
         return next(new AttendanceError('The child you are trying to update does not exist.', 400, 'fail'))
     }
 
     res.status(200).json({
         status: 'success',
         data: {
-            child
+            updatedChild
         }
     });
 });
@@ -143,6 +171,31 @@ const deleteChild = errorCatcher(async (req, res, next) => {
 
     // Delete the child and send a response.
     await Child.findByIdAndDelete(childId);
+
+    // Delete the child profile image from the S3 Bucket
+    // Create a new S3 client with our credentials.
+    const client = new S3Client({
+        region: process.env.S3_REGION,
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_ACCESS_SECRET
+        }
+    });
+
+    // Define the delete parameters.
+    const params = { 
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: child.profileImage
+    };
+
+    // Define and send the delete command.
+    const deleteCommand = new DeleteObjectCommand(params);
+    await client.send(deleteCommand);
+
+    // Remove the child from the primary guardian
+    primaryGuardian.children = primaryGuardian.children.filter(child => child._id.toString() !== childId);
+
+    await primaryGuardian.save();
 
     res.status(204).json({
         status: 'success',
