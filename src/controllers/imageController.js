@@ -24,8 +24,6 @@ const uploadImage = errorCatcher(async (req, res, next) => {
     if(!file) {
        return next(new AttendanceError('We tried to upload a file but no file was found.', 400, 'fail'));
     }
-    // Store the file data to send to S3.
-    const fileStream = fs.createReadStream(file.path);
 
     // Store the extension and the filename.
     const extension = file.mimetype.split('/')[1];
@@ -34,7 +32,7 @@ const uploadImage = errorCatcher(async (req, res, next) => {
     // Define the upload parameters
     const uploadParams = {
         Bucket: process.env.S3_BUCKET_NAME,
-        Body: fileStream,
+        Body: file.buffer,
         Key: `images/${imageFolder}/${filename}`
     }
 
