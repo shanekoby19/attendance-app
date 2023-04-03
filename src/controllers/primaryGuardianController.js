@@ -1,8 +1,9 @@
 const { PrimaryGuardian } = require('../models/primaryGuardianModel');
 const { Child } = require('../models/childModel');
-const { SecondaryGuardian, secondaryGuardianSchema } = require('../models/secondaryGuardianModel');
+const { SecondaryGuardian } = require('../models/secondaryGuardianModel');
 const errorCatcher = require('../error/errorCatcher');
 const AttendanceError = require('../error/AttendanceError');
+const { S3Client, DeleteObjectCommand } = require('@aws-sdk/client-s3'); // ES Modules import
 
 const addPrimaryGuardian = errorCatcher(async (req, res, next) => {
     // Create the primary guardian object to add to the database.
@@ -120,6 +121,25 @@ const deletePrimaryGuardian = errorCatcher(async (req, res, next) => {
 
     // Attempt to delete the guardian and send a response.
     await PrimaryGuardian.findByIdAndDelete(id);
+
+    // Create a new S3 client with our credentials.
+    const client = new S3Client({
+        region: process.env.S3_REGION,
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_ACCESS_SECRET
+        }
+    });
+
+    // Define the delete parameters.
+    const params = { 
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: primaryGuardian.profileImage
+    };
+
+    // Define and send the delete command.
+    const deleteCommand = new DeleteObjectCommand(params);
+    await client.send(deleteCommand);
 
     res.status(204).json({
         status: 'success',

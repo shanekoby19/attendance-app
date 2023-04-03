@@ -9,13 +9,18 @@ const {
 const authController = require('../controllers/authController');
 const childRouter = require('./childRouter');
 const secondaryGuardianRouter = require('../routes/secondaryGuardianRouter');
+const multer = require('multer');
+const memoryStorage = multer.memoryStorage();
+const upload = multer({ storage: memoryStorage });
+const uploadImage = require('../controllers/imageController');
+
 
 const primaryGuardianRouter = express.Router();
 
 primaryGuardianRouter
     .route('/')
     .get(authController.isAuthenticated, authController.isAuthorized('admin'), getPrimaryGuardians)
-    .post(authController.isAuthenticated, authController.isAuthorized('admin'), addPrimaryGuardian);
+    .post(authController.isAuthenticated, authController.isAuthorized('admin'), upload.single('profileImage'), uploadImage, addPrimaryGuardian);
 
 primaryGuardianRouter
     .route('/:id')

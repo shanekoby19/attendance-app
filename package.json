@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.304.0",
     "@googlemaps/google-maps-services-js": "^3.3.27",
     "@testing-library/dom": "^9.0.0",
     "@testing-library/jest-dom": "^5.16.5",
@@ -20,6 +21,7 @@
     "mongoose": "^6.10.0",
     "morgan": "^1.10.0",
     "msw": "^1.1.0",
+    "multer": "^1.4.5-lts.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
