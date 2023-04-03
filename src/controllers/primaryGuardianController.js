@@ -74,25 +74,47 @@ const updatePrimaryGuardian = errorCatcher(async (req, res, next) => {
     const id = req.params?.id;
 
     // Define the update primary guardian.
-    const updatedPrimaryGuardian = {
+    const primaryGuardianUpdates = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
-        password: req.body.password
+        password: req.body.password,
+        profileImage: req.body.profileImage
     }
 
     // Remove any keys that are undefined before updating the primary guardian.
-    Object.keys(updatedPrimaryGuardian).forEach(key => updatedPrimaryGuardian[key] === undefined ? delete updatedPrimaryGuardian[key]: null);
+    Object.keys(primaryGuardianUpdates).forEach(key => primaryGuardianUpdates[key] === undefined ? delete primaryGuardianUpdates[key]: null);
+
+    // If a new profile image was sent delete the old old.
+    const primaryGuardian = await PrimaryGuardian.findById(id);
+    // Create a new S3 client with our credentials.
+    const client = new S3Client({
+        region: process.env.S3_REGION,
+        credentials: {
+            accessKeyId: process.env.S3_ACCESS_KEY,
+            secretAccessKey: process.env.S3_ACCESS_SECRET
+        }
+    });
+
+    // Define the delete parameters.
+    const params = { 
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: primaryGuardian.profileImage
+    };
+
+    // Define and send the delete command.
+    const deleteCommand = new DeleteObjectCommand(params);
+    await client.send(deleteCommand);
 
     // Attempt to find primaryGuardians given the id.
-    const primaryGuardian = await PrimaryGuardian.findByIdAndUpdate(id, updatedPrimaryGuardian, {
+    const updatedPrimaryGuardian = await PrimaryGuardian.findByIdAndUpdate(id, primaryGuardianUpdates, {
         new: true,
     });
 
     res.status(200).json({
         status: 'success',
-        data: primaryGuardian,
+        data: updatedPrimaryGuardian,
     })
 });
 

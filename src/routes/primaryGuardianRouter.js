@@ -20,12 +20,12 @@ const primaryGuardianRouter = express.Router();
 primaryGuardianRouter
     .route('/')
     .get(authController.isAuthenticated, authController.isAuthorized('admin'), getPrimaryGuardians)
-    .post(authController.isAuthenticated, authController.isAuthorized('admin'), upload.single('profileImage'), uploadImage, addPrimaryGuardian);
+    .post(authController.isAuthenticated, authController.isAuthorized('admin'), upload.single('profileImage'), uploadImage('', 'primary-guardians'), addPrimaryGuardian);
 
 primaryGuardianRouter
     .route('/:id')
     .get(authController.isAuthenticated, authController.isAuthorized('admin'), getPrimaryGuardianById)
-    .patch(authController.isAuthenticated, authController.isAuthorized('admin'), updatePrimaryGuardian)
+    .patch(authController.isAuthenticated, authController.isAuthorized('admin'), upload.single('profileImage'), uploadImage('optional', 'primary-guardians'), updatePrimaryGuardian)
     .delete(authController.isAuthenticated, authController.isAuthorized('admin'), deletePrimaryGuardian);
 
 primaryGuardianRouter
