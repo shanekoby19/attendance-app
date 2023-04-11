@@ -105,7 +105,7 @@ const PrimaryGuardian = () => {
 
     return (
         <motion.section 
-            className='primary-guardian'
+            className='primary__guardian'
             initial={{
                 y: -100,
             }}
@@ -114,12 +114,12 @@ const PrimaryGuardian = () => {
                 transition: { duration: 1 }
             }}    
         >
-            <h2 className='primary-guardian__header'>Guardian Information</h2>
+            <h2 className='primary__guardian__header'>Guardian Information</h2>
 
-            <div className='primary-guardian__group--section'>
+            <div className='primary__guardian__group--section'>
 
                 {/* FIRST NAME INPUT */}
-                <div className='primary-guardian__group'>
+                <div className='primary__guardian__group'>
                     <label 
                         htmlFor="firstName"
                     >First Name</label>
@@ -132,7 +132,7 @@ const PrimaryGuardian = () => {
 
 
                 {/* LAST NAME INPUT */}
-                <div className='primary-guardian__group'>
+                <div className='primary__guardian__group'>
                     <label 
                         htmlFor="lastName"
                     >Last Name</label>
@@ -145,9 +145,9 @@ const PrimaryGuardian = () => {
             </div>
 
 
-            <div className='primary-guardian__group--section'>
+            <div className='primary__guardian__group--section'>
                 {/* EMAIL INPUT */}
-                <div className='primary-guardian__group'>
+                <div className='primary__guardian__group'>
                     <label 
                         htmlFor="email"
                     >Email</label>
@@ -160,7 +160,7 @@ const PrimaryGuardian = () => {
 
 
                 {/* PHONE INPUT */}
-                <div className='primary-guardian__group'>
+                <div className='primary__guardian__group'>
                     <label 
                         htmlFor="phone"
                     >Phone</label>
@@ -172,9 +172,9 @@ const PrimaryGuardian = () => {
                 </div>
             </div>
 
-            <div className='primary-guardian__group--section'>
+            <div className='primary__guardian__group--section'>
                 {/* PASSWORD INPUT */}
-                <div className='primary-guardian__group'>
+                <div className='primary__guardian__group'>
                     <label 
                         htmlFor="password"
                     >Password</label>
@@ -186,7 +186,7 @@ const PrimaryGuardian = () => {
                 </div>
 
                 {/* CONFIRM PASSWORD INPUT */}
-                <div className='primary-guardian__group'>
+                <div className='primary__guardian__group'>
                     <label 
                         htmlFor="confirmPassword"
                     >Confirm Password</label>
@@ -200,15 +200,15 @@ const PrimaryGuardian = () => {
 
 
 
-            <div className='primary-guardian__group--section'>
+            <div className='primary__guardian__group--section'>
                 <Dropzone file={file} setFile={setFile}></Dropzone>
             </div>
 
-            <div className='primary-guardian__group--section' style={{ color: "red" }}>
+            <div className='primary__guardian__group--section' style={{ color: "red" }}>
                 { error }
             </div>
 
-            <div className='primary-guardian__group--section' style={{ justifyContent: "space-between", width: "64%", margin: "0 auto" }}>
+            <div className='primary__guardian__group--section' style={{ justifyContent: "space-between", width: "64%", margin: "0 auto" }}>
                 <button
                     className='primary__button'
                     style={{
