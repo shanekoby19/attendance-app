@@ -6,10 +6,6 @@ const classroomSchema = new mongoose.Schema({
         trim: true,
         required: [true, 'A classroom must have a name.'],
     },
-    admins: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }],
     teachers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

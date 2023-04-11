@@ -79,6 +79,7 @@ const Site = ({ site, setError, setLoading }) => {
                     >
                         <a
                             target="_blank"
+                            rel="noreferrer"
                             href={`https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`}
                         >
                         Get Directons</a>

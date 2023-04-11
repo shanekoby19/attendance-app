@@ -143,6 +143,7 @@ const addSite = errorCatcher(async (req, res, next) => {
     const newSite = await Site.create({
         name: req.body.name,
         classrooms: req.body.classrooms,
+        admins: req.body.admins,
         location: {
             address: req.body.location.address,
             city: req.body.location.city,
@@ -175,6 +176,7 @@ const updateSite = errorCatcher(async (req, res, next) => {
     const siteUpdates = {
         name: req.body.name,
         classrooms: req.body.classrooms,
+        admins: req.body.admins,
         location: {
             address: req.body.location?.address,
             city: req.body.location?.city,

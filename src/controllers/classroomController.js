@@ -62,7 +62,6 @@ const addClassroom = errorCatcher(async (req, res, next) => {
     // Create the new classroom object.
     const newClassroom = {
         name: req.body.name,
-        admins: req.body.admins,
         teachers: req.body.teachers,
         children: req.body.children
     }
@@ -89,7 +88,6 @@ const updateClassroom = errorCatcher(async(req, res, next) => {
 
     const classroomUpdates = {
         name: req.body.name,
-        admins: req.body.admins,
         teachers: req.body.teachers,
         children: req.body.children,
     }

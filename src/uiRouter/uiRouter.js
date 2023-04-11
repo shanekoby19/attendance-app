@@ -12,8 +12,7 @@ import CheckIn from '../pages/CheckIn/CheckIn';
 import CheckInLink from '../pages/CheckInLink/components/CheckInLink';
 
 
-const UIRouter = () => {
-    
+const UIRouter = () => {    
     const isAuthenticated = async () => {
         try {
             await axios.get('http://localhost:3000/api/v1/auth/login', { withCredentials: true });
@@ -45,6 +44,7 @@ const UIRouter = () => {
 
                     const res2 = await axios.get('http://localhost:3000/api/v1/sites', { withCredentials: true });
                     const maxNumOfSites = res2.data.data.nearbySites.length;
+
                     return {
                         apiKeys,
                         maxNumOfSites,

@@ -9,6 +9,10 @@ const siteSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Classroom'
     }],
+    admins: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
     location: {
         address: {
             type: String,

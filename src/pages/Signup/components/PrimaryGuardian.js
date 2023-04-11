@@ -224,7 +224,8 @@ const PrimaryGuardian = () => {
                         setError('')
                         const formDetails = getFormDetails();
                         if(formDetails.isFilledOut) {
-                            
+                            setLoading(true);
+                            setTimeout(() => setLoading(false), 1000);
                         }
                         setError(formDetails.error);
 

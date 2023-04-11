@@ -19,8 +19,9 @@ const LocationForm = ({ mapIsExpanded, apiKeys, setError, setLoading }) => {
         updateCoords({...coords, coordinates: [lng, lat]})
 
         axios
-            .get(`http://localhost:3000/api/v1/sites?lng=${lng}&lat=${lat}&limit=3`)
-            .then(response => updateSites(response.data.data.nearbySites));
+            .get(`http://localhost:3000/api/v1/sites?lng=${lng}&lat=${lat}&limit=3`, { withCredentials: true })
+            .then(response => updateSites(response.data.data.nearbySites))
+            .catch(err => setError(err));
     }
 
     const useCurrentLocation = () => {

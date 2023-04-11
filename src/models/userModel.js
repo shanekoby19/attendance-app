@@ -15,7 +15,6 @@ const userSchema = new Schema({
     email: {
         type: 'String',
         required: [true, 'A user must have an email.'],
-        unique: [true, 'This email is already in use, please contact our support team for more information.']
     },
     password: {
         type: 'String',
@@ -29,7 +28,12 @@ const userSchema = new Schema({
             message: 'The user role must be one of the following values: viewer, admin, super admin'
         }
     }
-})
+});
+
+userSchema.index({ email: 1, }, { 
+    unique: true,
+    partialFilterExpression: { email: { $ne: null } } 
+});
 
 const User = mongoose.model('User', userSchema);
 
