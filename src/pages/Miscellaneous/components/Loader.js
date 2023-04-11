@@ -1,6 +1,6 @@
 import { Dna } from 'react-loader-spinner';
 
-const Loader = ({ style }) => {
+const Loader = ({ style, message }) => {
     return (
         <div
             style={style}
@@ -18,7 +18,7 @@ const Loader = ({ style }) => {
                     fontSize: "1rem",
                     fontWeight: 700
                 }}
-            >One second, we're calculating your location...</p>
+            >{ message }</p>
         </div>
     )
 }

@@ -8,8 +8,8 @@ import '../styles/Site.scss';
 
 
 const Site = ({ site, setError, setLoading }) => {
-    const distance = site.distance.feet <= 20000 ? `${site.distance.feet}ft` : `${site.distance.miles}mi`;
-    const within1000feet = site.distance.feet <= 20000;
+    const distance = site.distance.feet <= 500 ? `${site.distance.feet}ft` : `${site.distance.miles}mi`;
+    const within1000feet = site.distance.feet <= 500;
     const [ originLng, originLat ] = site.location.coords.coordinates;
     const [ destLng, destLat ] = useCoords().coordinates;
     const navigate = useNavigate();
@@ -19,14 +19,15 @@ const Site = ({ site, setError, setLoading }) => {
         setLoading(true);
         navigator.geolocation.getCurrentPosition(async ({ coords }) => {
             const closestCenter = await axios
-                .get(`http://localhost:3000/api/v1/sites?lng=${coords.longitude}&lat=${coords.latitude}&limit=1`)
-                .then(response => response.data.data.nearbySites[0]);
+                .get(`http://localhost:3000/api/v1/sites?lng=${coords.longitude}&lat=${coords.latitude}&limit=1`, { withCredentials: true })
+                .then(response => response.data.data.nearbySites[0])
+                .catch(err => setError(err.message));
 
-            if(closestCenter.distance.feet <= 20000) {
+            if(closestCenter.distance.feet <= 500) {
                 return navigate('/checkin/link');
             }
 
-            setError(`Invalid check-in attempt: your current location must be within 20000 feet of the center to check-in. According to our location search you are ${closestCenter.distance.miles} mi away.`)
+            setError(`Invalid check-in attempt: your current location must be within 500 feet of the center to check-in. According to our location search you are ${closestCenter.distance.miles} mi away.`)
             setLoading(false);
         }, ({ code }) => {
             // Code 1 = 'Permissions Denied'

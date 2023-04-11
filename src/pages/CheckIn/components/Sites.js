@@ -28,7 +28,7 @@ const Sites = ({ maxNumOfSites, error, setError, loading, setLoading }) => {
     }
 
     if(loading) {
-        <Loader />
+        return <Loader message="One second, we're calculating your location..."/>
     }
 
     if(sites.length === 0) {
