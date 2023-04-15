@@ -18,7 +18,8 @@ const  Dropzone = ({ file, setFile }) => {
               justifyContent: "center",
               alignItems: "center",
               width: "64%",
-              marginTop: "2rem"
+              marginTop: "2rem",
+              backgroundColor: "rgba(255, 255, 255, 0.9)"
           }}
       >
         <input {...getInputProps()} />
@@ -27,7 +28,7 @@ const  Dropzone = ({ file, setFile }) => {
             <p style={{ color: "green" }}>Good to drop...</p> :
             file ?
             <p style={{ color: "green" }}>{file.path}</p> :
-            <p style={{ color: "red" }}>Drag and drop a profile photo here.</p>
+            <p style={{ color: "black" }}>Drag and drop a profile photo here.</p>
         }
       </div>
     )

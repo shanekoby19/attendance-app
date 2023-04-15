@@ -201,7 +201,7 @@ const PrimaryGuardian = () => {
 
 
             <div className='primary__guardian__group--section'>
-                <Dropzone file={file} setFile={setFile}></Dropzone>
+                <Dropzone style={{color: "black"}} file={file} setFile={setFile}></Dropzone>
             </div>
 
             <div className='primary__guardian__group--section' style={{ color: "red" }}>

@@ -5,9 +5,9 @@
     &__header {
 
         &__name {
-            font-size: 1.4rem;
-            font-weight: 500;
-            color: #14A79E;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
         }
     }
 
@@ -15,6 +15,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        color: #d4d4d4;
 
         & button {
             margin-left: 2rem;
@@ -22,24 +23,26 @@
         }
          
         &__address {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 300;
         }
 
         &__checkIn {
             display: flex;
+            color: #d4d4d4;
         }
 
         &__distance {
-            font-size: 1.4rem;
+            font-size: 1rem;
             font-weight: 300;
+            color: #d4d4d4;
 
             &--fail {
                 color: red;
             }
 
             &--success {
-                color: white;
+                color: #86c3a0;
             }
         }
     }

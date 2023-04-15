@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { GrLocation } from "react-icons/gr";
+import { BsFillClipboard2CheckFill } from "react-icons/bs";
 import axios from 'axios';
 
 import { useCoords } from '../../../context/DataContext';
@@ -65,7 +67,7 @@ const Site = ({ site, setError, setLoading }) => {
             variants={siteVariant}
         >
             <section className='site__header'>
-                <h2 className='site__header__name'>{site.site}</h2>
+                <h2 className='site__header__name'>{site.name}</h2>
             </section>
             
             <section className='site__details'>
@@ -83,14 +85,14 @@ const Site = ({ site, setError, setLoading }) => {
                             rel="noreferrer"
                             href={`https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`}
                         >
-                        Get Directons</a>
+                        <GrLocation style={{ fill: "#14A79E" }}/>Directons</a>
                     </button>
 
                     <button
                         disabled={!within1000feet}
                         className={`primary__button${within1000feet ? '' : '--disabled'} site__details__checkIn__button`}
                         onClick={validateCheckIn}
-                    >Check-In</button>
+                    ><BsFillClipboard2CheckFill />Check-In</button>
                 </div>
             </section>
         </motion.div>

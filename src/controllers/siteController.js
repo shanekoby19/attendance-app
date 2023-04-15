@@ -89,8 +89,7 @@ const getSites = errorCatcher(async (req, res) => {
     // Push on a project stage to round miles and get distance in feet.
     pipeline.push({
         $project: {
-            program: 1,
-            site: 1,
+            name: 1,
             location: 1,
             "distance.miles": {
                 $round: ["$distance.miles", 2]
