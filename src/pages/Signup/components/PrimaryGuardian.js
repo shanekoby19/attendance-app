@@ -228,7 +228,6 @@ const PrimaryGuardian = () => {
                             setTimeout(() => setLoading(false), 1000);
                         }
                         setError(formDetails.error);
-
                     }}
                 >Children</button>
             </div>

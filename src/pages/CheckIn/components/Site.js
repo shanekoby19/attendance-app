@@ -72,7 +72,7 @@ const Site = ({ site, setError, setLoading }) => {
             
             <section className='site__details'>
                 <div>
-                    <h3 className="site__details__address">{site.location.address} {`${site.location.city}, ${site.location.state} ${site.location.zip}`}</h3>
+                    <h3 className="site__details__address">{site.location.address}<br></br>{`${site.location.city}, ${site.location.state} ${site.location.zip}`}<br></br>{site.phoneNumber}</h3>
                 </div>
                 <div className='site__details__checkIn'>
                     <h4 className={`site__details__distance site__details__distance--${within1000feet ? 'success' : 'fail'}`}>{distance}</h4>
@@ -85,7 +85,7 @@ const Site = ({ site, setError, setLoading }) => {
                             rel="noreferrer"
                             href={`https://www.google.com/maps/dir/${originLat},${originLng}/${destLat},${destLng}`}
                         >
-                        <GrLocation style={{ fill: "#14A79E" }}/>Directons</a>
+                        <GrLocation color="white" style={{ marginRight: "0.4rem" }}/>Directons</a>
                     </button>
 
                     <button

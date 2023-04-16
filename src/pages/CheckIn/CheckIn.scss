@@ -2,4 +2,13 @@
     padding: 1rem;
     min-height: 90vh;
     display: flex;
+
+    &__search {
+        max-height: 90vh;
+        overflow: scroll;
+
+        &::-webkit-scrollbar {
+            background-color: #0A122D;
+        }
+    }
 }

@@ -19,6 +19,7 @@ const CheckIn = () => {
     return (
         <div className='checkIn'>
             <motion.section 
+                className='checkIn__search'
                 initial={{ width: mapIsExpanded ? "10%" : "30%" }}
                 animate={{ width: mapIsExpanded ? "30%" : "50%"}}
                 transition={{

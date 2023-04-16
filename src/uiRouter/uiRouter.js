@@ -10,6 +10,7 @@ import Login from '../pages/Login/components/Login';
 import Signup from '../pages/Signup/components/Signup';
 import CheckIn from '../pages/CheckIn/CheckIn';
 import CheckInLink from '../pages/CheckInLink/components/CheckInLink';
+import ParentForm from '../components/ParentForm';
 
 
 const UIRouter = () => {    
@@ -31,7 +32,7 @@ const UIRouter = () => {
         },
         {
             path: '/signup',
-            element: <Signup />,
+            element: <ParentForm />,
         },
         {
             path: '/checkin',
