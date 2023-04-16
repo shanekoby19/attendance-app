@@ -2,8 +2,8 @@ import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import validator from 'validator';
 
-import Dropzone from '../../Miscellaneous/components/Dropzone';
-import Loader from '../../Miscellaneous/components/Loader';
+import Dropzone from '../../../components/Dropzone/Dropzone';
+import Loader from '../../../components/Loader/Loader';
 
 import '../styles/PrimaryGuardian.scss';
 

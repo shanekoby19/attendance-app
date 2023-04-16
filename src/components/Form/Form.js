@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import validator from 'validator';
 
+import Loader from '../Loader/Loader';
+
 const Form = ({ children, onFormSubmit, style, classNames }) => {
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const inputsAreValid = (e) => {
         const errorElement = Array.from(e.target).find(element => {
             // Check to see the element is an input element.
             if(element.nodeName === 'INPUT') {
                 // Ensure a value was given.
-                if(!element.value) {
+                if(!element.value && element.type !== 'file') {
+                    console.log(element);
                     setError(`The ${element.id} field is required.`);
                     return true;
                 }
@@ -20,9 +24,21 @@ const Form = ({ children, onFormSubmit, style, classNames }) => {
                     return true
                 }
 
+                // Ensure a valid phoneNumber is given (must use id='phone')
+                if(element.id === 'phone' && !validator.isMobilePhone(element.value)) {
+                    setError(`${element.value} is not a valid phone number.`)
+                    return true
+                }
+
+                // Ensure a valid password is given (must use id='password')
+                if(element.id === 'password' && !validator.isStrongPassword(element.value)) {
+                    setError(`${element.value} is not a valid password`)
+                    return true;
+                }
 
                 // Reset the border color for any inputs that have been fixed.
                 if(element.style.borderColor === 'red') {
+                    setError('');
                     element.style.borderColor = 'white'
                 }
             }
@@ -40,9 +56,20 @@ const Form = ({ children, onFormSubmit, style, classNames }) => {
         return true;
     }
 
+    if(loading) {
+        <Loader 
+            style={{
+                height: "55vh",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center"
+            }}
+        />
+    }
+
     return (
         <form 
-            className={`form ${classNames.join(' ')}`}
+            className={`form ${classNames && classNames.length > 0 ? classNames.join(' ') : ''}`}
             style={style}
             onSubmit={(e) => {
                 e.preventDefault();

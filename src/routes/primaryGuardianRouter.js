@@ -20,7 +20,7 @@ const primaryGuardianRouter = express.Router();
 primaryGuardianRouter
     .route('/')
     .get(authController.isAuthenticated, authController.isAuthorized('admin'), getPrimaryGuardians)
-    .post(authController.isAuthenticated, authController.isAuthorized('admin'), upload.single('profileImage'), uploadImage('', 'primary-guardians'), addPrimaryGuardian);
+    .post(upload.single('profileImage'), uploadImage('', 'primary-guardians'), addPrimaryGuardian);
 
 primaryGuardianRouter
     .route('/:id')

@@ -6,7 +6,7 @@ import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 
 import { useSites, useUpdateSites, useCoords } from '../../../context/DataContext'
 import Site from './Site';
-import Loader from '../../Miscellaneous/components/Loader';
+import Loader from '../../../components/Loader/Loader';
 
 import '../styles/Sites.scss';
 

@@ -22,7 +22,7 @@ const  Dropzone = ({ file, setFile }) => {
               backgroundColor: "rgba(255, 255, 255, 0.9)"
           }}
       >
-        <input {...getInputProps()} />
+        <input id='photo' {...getInputProps()} />
         {
           isDragActive ?
             <p style={{ color: "green" }}>Good to drop...</p> :
