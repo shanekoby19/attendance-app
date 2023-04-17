@@ -1,4 +1,5 @@
 const { PrimaryGuardian } = require('../models/primaryGuardianModel');
+const { User } = require('../models/userModel');
 const { Child } = require('../models/childModel');
 const { SecondaryGuardian } = require('../models/secondaryGuardianModel');
 const errorCatcher = require('../error/errorCatcher');
@@ -19,9 +20,19 @@ const addPrimaryGuardian = errorCatcher(async (req, res, next) => {
     // Create the primary guardian in the database and send it back to the user.
     const primaryGuardian = await PrimaryGuardian.create(reqPrimaryGuardian);
 
+    // Create a user profile for this guardian with viewer only access.
+    const user = await User.create({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: req.body.password,
+        role: 'viewer',
+    })
+
     res.status(201).json({
         status: 'success',
-        data: primaryGuardian
+        primaryGuardian,
+        user
     })
 });
 

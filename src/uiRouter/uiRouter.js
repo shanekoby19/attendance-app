@@ -5,12 +5,11 @@ import {
 } from 'react-router-dom';
 import axios from 'axios';
 
-import Error from '../pages/Error/components/Error';
+import ErrorPage from '../pages/ErrorPage/components/ErrorPage';
 import Login from '../pages/Login/components/Login';
-import Signup from '../pages/Signup/components/Signup';
+import Signup from '../pages/Signup/Signup';
 import CheckIn from '../pages/CheckIn/CheckIn';
 import CheckInLink from '../pages/CheckInLink/components/CheckInLink';
-import PrimaryGuardianForm from '../components/Form/PrimaryGuardianForm';
 
 
 const UIRouter = () => {    
@@ -32,7 +31,7 @@ const UIRouter = () => {
         },
         {
             path: '/signup',
-            element: <PrimaryGuardianForm />,
+            element: <Signup />,
         },
         {
             path: '/checkin',
@@ -78,7 +77,7 @@ const ErrorBoundary = () => {
     if (isRouteErrorResponse(error) && error.status === 401) {
       // the response json is automatically parsed to
       // `error.data`, you also have access to the status
-      return <Error message={error.data} status={error.status} />
+      return <ErrorPage message={error.data} status={error.status} />
     }
 }
 

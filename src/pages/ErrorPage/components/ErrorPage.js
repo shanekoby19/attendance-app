@@ -1,8 +1,8 @@
-import '../styles/Error.scss';
+import '../styles/ErrorPage.scss';
 
-const Error = ({ message, status }) => {
+const ErrorPage = ({ message, status }) => {
     return (
-        <div className='error'>
+        <div className='error__page'>
             <div
                 style={{
                     position: "relative",
@@ -10,7 +10,7 @@ const Error = ({ message, status }) => {
                 }}
             >
                 <img
-                    className='error__image'
+                    className='error__page__image'
                     src='./images/error.jpg'
                     alt="People experiencing an error"
                 ></img>
@@ -24,12 +24,12 @@ const Error = ({ message, status }) => {
                 >Image by pch.vector</a>
             </div>
 
-            <div className='error__content'>
-                <h1 className='error__content--status'>{status} ERROR:</h1>
-                <h2 className='error__content--message'>{message}</h2>
+            <div className='error__page__content'>
+                <h1 className='error__page__content--status'>{status} ERROR:</h1>
+                <h2 className='error__page__content--message'>{message}</h2>
             </div>
         </div>
     )
 }
 
-export default Error;
+export default ErrorPage;

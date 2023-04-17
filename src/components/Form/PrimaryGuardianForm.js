@@ -4,12 +4,17 @@ import { motion } from 'framer-motion';
 
 import Dropzone from '../Dropzone/Dropzone';
 import Form from './Form';
+import Loader from '../Loader/Loader';
+
+import { useSetAuthUser } from '../../context/AuthContext';
+import './styles/PrimaryGuardianForm.scss';
 
 
 const PrimaryGuardianForm = () => {
     const [file, setFile] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState('');
+    const setAuthUser = useSetAuthUser();
 
     const firstNameRef = useRef(null);
     const lastNameRef = useRef(null);
@@ -21,18 +26,18 @@ const PrimaryGuardianForm = () => {
     const onFormSubmit = async () => {
         // Ensure the password and confirmPassword fields match
         if(passwordRef.current.value !== confirmPasswordRef.current.value) {
-            setError('Your passwords do not match, please re-enter them.')
+            return setError('Your passwords do not match, please re-enter them.')
         }
 
         // Ensure a file was uploaded for the profile picture.
         if(!file) {
-            setError('Your profile image is required.');
+            return setError('Your profile image is required.');
         }
 
         // Ensure the file was a image.
         if(!file.type.includes('image')) {
             setError('The file you tried uploading is not an image.')
-            setFile(null);
+            return setFile(null);
         }
 
         // Add the user to the database.
@@ -53,6 +58,9 @@ const PrimaryGuardianForm = () => {
             });
             
             // Store the current user in state.
+            setAuthUser(response.user);
+            setLoading(false);
+            setError('');
         } catch(err) {
             setError(err.message);
         };
@@ -63,7 +71,7 @@ const PrimaryGuardianForm = () => {
             onFormSubmit={onFormSubmit}
         >
             <motion.section 
-                className='primary__guardian'
+                className='primary__guardian__form'
                 initial={{
                     y: -100,
                 }}
@@ -72,12 +80,12 @@ const PrimaryGuardianForm = () => {
                     transition: { duration: 1 }
                 }}    
             >
-                <h2 className='primary__guardian__header'>Guardian Information</h2>
+                <h2 className='primary__guardian__form__header'>Guardian Information</h2>
 
-                <div className='primary__guardian__group--section'>
+                <div className='primary__guardian__form__group--section'>
 
                     {/* FIRST NAME INPUT */}
-                    <div className='primary__guardian__group'>
+                    <div className='primary__guardian__form__group'>
                         <label 
                             htmlFor="firstName"
                         >First Name</label>
@@ -90,7 +98,7 @@ const PrimaryGuardianForm = () => {
 
 
                     {/* LAST NAME INPUT */}
-                    <div className='primary__guardian__group'>
+                    <div className='primary__guardian__form__group'>
                         <label 
                             htmlFor="lastName"
                         >Last Name</label>
@@ -103,9 +111,9 @@ const PrimaryGuardianForm = () => {
                 </div>
 
 
-                <div className='primary__guardian__group--section'>
+                <div className='primary__guardian__form__group--section'>
                     {/* EMAIL INPUT */}
-                    <div className='primary__guardian__group'>
+                    <div className='primary__guardian__form__group'>
                         <label 
                             htmlFor="email"
                         >Email</label>
@@ -118,7 +126,7 @@ const PrimaryGuardianForm = () => {
 
 
                     {/* PHONE INPUT */}
-                    <div className='primary__guardian__group'>
+                    <div className='primary__guardian__form__group'>
                         <label 
                             htmlFor="phone"
                         >Phone</label>
@@ -130,9 +138,9 @@ const PrimaryGuardianForm = () => {
                     </div>
                 </div>
 
-                <div className='primary__guardian__group--section'>
+                <div className='primary__guardian__form__group--section'>
                     {/* PASSWORD INPUT */}
-                    <div className='primary__guardian__group'>
+                    <div className='primary__guardian__form__group'>
                         <label 
                             htmlFor="password"
                         >Password</label>
@@ -144,7 +152,7 @@ const PrimaryGuardianForm = () => {
                     </div>
 
                     {/* CONFIRM PASSWORD INPUT */}
-                    <div className='primary__guardian__group'>
+                    <div className='primary__guardian__form__group'>
                         <label 
                             htmlFor="confirmPassword"
                         >Confirm Password</label>
@@ -158,15 +166,22 @@ const PrimaryGuardianForm = () => {
 
 
 
-                <div className='primary__guardian__group--section'>
+                <div className='primary__guardian__form__group--section'>
                     <Dropzone style={{color: "black"}} file={file} setFile={setFile}></Dropzone>
                 </div>
 
-                <div className='primary__guardian__group--section'>
+                <div className='primary__guardian__form__group--section'>
                     {error && <p>{error}</p>}
                 </div>
 
-                <div className='primary__guardian__group--section' style={{ justifyContent: "space-between", width: "64%", margin: "0 auto" }}>
+                <div>
+                    {
+                        loading && 
+                        <Loader message="Creating your profile in the database."/>
+                    }
+                </div>
+
+                <div className='primary__guardian__form__group--section' style={{ justifyContent: "space-between", width: "64%", margin: "0 auto" }}>
                     <button
                         className='primary__button'
                         style={{

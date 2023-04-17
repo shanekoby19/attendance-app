@@ -44,6 +44,11 @@ const logout = (req, res, next) => {
 
 const isAuthorized = (authorizationLevel) => {
     return (req, res, next) => {
+        // If the requester is trying to add a user with the role "viewer" skip this middleware
+        if(req?.body?.role === 'viewer') {
+            next();
+        }
+
         const { user } = req;
 
         // User has recently logged out or cookie has expired for other reason.

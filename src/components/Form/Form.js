@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import validator from 'validator';
 
 import Loader from '../Loader/Loader';
+import Error from '../Error/Error';
+
+import './styles/Form.scss';
 
 const Form = ({ children, onFormSubmit, style, classNames }) => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    console.log("Error is: ", error);
 
     const inputsAreValid = (e) => {
         const errorElement = Array.from(e.target).find(element => {
@@ -78,7 +83,7 @@ const Form = ({ children, onFormSubmit, style, classNames }) => {
                 }
             }}>
             {children}
-            {error && <p>{error}</p>}
+            {error && <Error message={error}/>}
         </form>
     )
 }
